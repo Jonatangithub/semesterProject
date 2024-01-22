@@ -8,6 +8,7 @@ const port = (process.env.PORT || 8080);
 server.set('port', port);
 
 // Defining a folder that will contain static files.
+server.use(express.json());
 server.use(express.static('public'));
 
 // Telling the server to use the USER_API (all urls that uses this code will have to have the /user after the base address)

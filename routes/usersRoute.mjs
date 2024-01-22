@@ -15,6 +15,9 @@ USER_API.get('/:id', (req, res) => {
     /// TODO: 
     // Return user object
 })
+USER_API.get('/', (req, res) => {
+res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
+})
 
 USER_API.post('/', (req, res, next) => {
 
@@ -27,7 +30,7 @@ USER_API.post('/', (req, res, next) => {
         const user = new User();
         user.name = name;
         user.email = email;
-
+        console.log(users);
         ///TODO: Do not save passwords.
         user.pswHash = password;
 
