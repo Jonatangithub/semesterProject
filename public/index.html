@@ -4,12 +4,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My app</title>
+    <title>RPS 2</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-
-
 <body>
-    <h1>Hello Class</h1>
+    <script src="menu.mjs"></script>
+    <script src="game.mjs"></script>
+    <script src="settings.mjs"></script>
+<header>
+    <div id="menu-button">&#9776;</div>
+    <h1>Rock Paper Scissors 2:</h1>
+    <div id="options">
+        <a href="#profile" data-modal="profileModal">Profile</a>
+        <a href="#leaderboard" data-modal="leaderboardModal">Leaderboard</a>
+        <a href="#settings" data-modal="settingsModal">Settings</a>
+    </div>
+</header>
+<section>
+    <h2>Funny Text?</h2>
+    <p>.</p>
+    <div id="game">
+        <div id="user-choice">
+            <h3>Your Choice</h3>
+            <button onclick="makeChoice('rock')">Rock</button>
+            <button onclick="makeChoice('paper')">Paper</button>
+            <button onclick="makeChoice('scissors')">Scissors</button>
+            <button onclick="makeChoice('fire')">Fire</button>
+            <button onclick="makeChoice('water')">Water</button>
+            <button onclick="makeChoice('air')">Air</button>
+            <button onclick="makeChoice('sponge')">Sponge</button>
+            <button onclick="makeChoice('human')">Human</button>
+            <button onclick="makeChoice('gun')">Gun</button>
+        </div>
+        <div id="result">
+            <h3>Result</h3>
+            <p id="result-text">Make your choice to start the game!</p>
+        </div>
+        <div id="computer-choice">
+            <h3>Computer's Choice</h3>
+            <p id="computer-choice-text"></p>
+        </div>
+    </div>
+<div id="leaderboardModal" class="modal">
+<div class="modal-content">
+    <span class="close">&times;</span>
+    <p>This is the Leaderboard.</p>
+</div>
+</div>
+
+<div id="profileModal" class="modal">
+<div class="modal-content">
+    <span class="close">&times;</span>
+    <p>This is the Profile.</p>
+</div>
+</div>
+
+<div id="settingsModal" class="modal">
+<div class="modal-content">
+    <span class="close">&times;</span>
+    <h3>These are the Settings.</h3>
+    <label for="darkModeCheckbox">Dark Mode</label>
+    <input type="checkbox" id="darkModeCheckbox">
+</div>
+</div>
+
+</section>
+<footer>
+    <p>&copy; 2024 Rock Paper Scissors 2. All rights reserved.</p>
+</footer>
 </body>
 
 </html>
