@@ -17,22 +17,18 @@ function generateRandomId(length) {
     return randomId;
 }
 
-// Usage:
-let generatedId = generateRandomId(100);
+// let generatedId = generateRandomId(10);
 
 const users = [];
 
 USER_API.get('/:id', (req, res) => {
     const userId = req.params.id;
 
-    // Find the user with the given ID
     const user = users.find(user => user.id === userId);
 
     if (user) {
-        // User found, send user object in the response
         res.status(HttpCodes.SuccesfullRespons.Ok).send(user).end();
     } else {
-        // User not found
         res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
     }
 });
@@ -43,9 +39,6 @@ res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
 
 USER_API.post('/', (req, res, next) => {
 
-    // This is using javascript object destructuring.
-    // Recomend reading up https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#syntax
-    // https://www.freecodecamp.org/news/javascript-object-destructuring-spread-operator-rest-parameter/
     const { name, email, password } = req.body;
 
     if (name != "" && email != "" && password != "") {
