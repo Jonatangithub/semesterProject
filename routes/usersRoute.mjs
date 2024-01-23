@@ -47,7 +47,11 @@ USER_API.post('/', (req, res, next) => {
         user.email = email;
         user.id = generateRandomId(7);
         console.log(users);
+
+
         ///TODO: Do not save passwords.
+
+        
         user.pswHash = password;
         const exists = users.some(user => user.email === email);
 
