@@ -6,7 +6,7 @@ const USER_API = express.Router();
 
 
 function generateRandomId(length) {
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
     let randomId = '';
 
     for (let i = 0; i < length; i++) {
@@ -18,19 +18,24 @@ function generateRandomId(length) {
 }
 
 // Usage:
-let generatedId = generateRandomId(5);
-console.log(generatedId);
+let generatedId = generateRandomId(100);
 
 const users = [];
 
 USER_API.get('/:id', (req, res) => {
+    const userId = req.params.id;
 
-    // Tip: All the information you need to get the id part of the request can be found in the documentation 
-    // https://expressjs.com/en/guide/routing.html (Route parameters)
+    // Find the user with the given ID
+    const user = users.find(user => user.id === userId);
 
-    /// TODO: 
-    // Return user object
-})
+    if (user) {
+        // User found, send user object in the response
+        res.status(HttpCodes.SuccesfullRespons.Ok).send(user).end();
+    } else {
+        // User not found
+        res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+    }
+});
 
 USER_API.get('/', (req, res) => {
 res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
@@ -47,13 +52,11 @@ USER_API.post('/', (req, res, next) => {
         const user = new User();
         user.name = name;
         user.email = email;
-        user.id = generateRandomId(5);
+        user.id = generateRandomId(7);
         console.log(users);
         ///TODO: Do not save passwords.
         user.pswHash = password;
         const exists = users.some(user => user.email === email);
-
-        ///TODO: Does the user exist?
 
         if (!exists) {
             users.push(user);
@@ -68,12 +71,39 @@ USER_API.post('/', (req, res, next) => {
 
 });
 
+
 USER_API.put('/:id', (req, res) => {
-    /// TODO: Edit user
-})
+    const userId = req.params.id;
+    const { name, email, password } = req.body;
+
+    const userIndex = users.findIndex(user => user.id === userId);
+
+    if (userIndex !== -1) {
+
+        users[userIndex].name = name !== undefined ? name : users[userIndex].name;
+        users[userIndex].email = email !== undefined ? email : users[userIndex].email;
+
+
+        res.status(HttpCodes.SuccesfullRespons.Ok).send("User updated successfully").end();
+    } else {
+        res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+    }
+});
+
+
 
 USER_API.delete('/:id', (req, res) => {
-    /// TODO: Delete user.
-})
+    const userId = req.params.id;
+
+    const userIndex = users.findIndex(user => user.id === userId);
+
+    if (userIndex !== -1) {
+        users.splice(userIndex, 1);
+        res.status(HttpCodes.SuccesfullRespons.Ok).send("Deleted Success").end();
+    } else {
+        res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+    }
+});
+
 
 export default USER_API
