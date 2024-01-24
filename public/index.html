@@ -67,11 +67,55 @@
     <input type="checkbox" id="darkModeCheckbox">
 </div>
 </div>
+<h1>User Registration</h1>
 
+<form id="registrationForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="button" onclick="registerUser()">Register</button>
+</form>
 </section>
 <footer>
     <p>&copy; 2024 Rock Paper Scissors 2. All rights reserved.</p>
 </footer>
+<body>
+<script>
+    const apiURL = 'http://localhost:8080/user'
+    function registerUser() {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        const user = {
+            name: name,
+            email: email,
+            password: password
+        };
+
+        fetch(apiURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('User registered successfully');
+            } else {
+                console.error('Failed to register user');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
 </body>
 
 </html>

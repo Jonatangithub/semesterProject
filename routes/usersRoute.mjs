@@ -1,25 +1,42 @@
 import express, { response } from "express";
 import User from "../modules/user.mjs";
 import HttpCodes from "../modules/httpErrorCodes.mjs";
+import fs from 'fs';
+
 const USER_API = express.Router();
-
-
 
 function generateRandomId(length) {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-    let randomId = '';
+    let randomId;
 
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * alphabet.length);
-        randomId += alphabet.charAt(randomIndex);
-    }
+    do {
+        randomId = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * alphabet.length);
+            randomId += alphabet.charAt(randomIndex);
+        }
+    } while (users.some(user => user.id === randomId));
 
     return randomId;
 }
+let users = [];
+try {
+  const data = fs.readFileSync('users.json', 'utf8');
+  users = JSON.parse(data);
+} catch (err) {
+  console.log('Error reading users file:', err.message);
+}
+
+function saveUsersToFile() {
+    fs.writeFileSync('users.json', JSON.stringify(users), 'utf8', (err) => {
+      if (err) {
+        console.log('Error writing users file:', err.message);
+      }
+    });
+  }
+
 
 // let generatedId = generateRandomId(10);
-
-const users = [];
 
 USER_API.get('/:id', (req, res) => {
     const userId = req.params.id;
@@ -51,12 +68,13 @@ USER_API.post('/', (req, res, next) => {
 
         ///TODO: Do not save passwords.
 
-        
+
         user.pswHash = password;
         const exists = users.some(user => user.email === email);
 
         if (!exists) {
             users.push(user);
+            saveUsersToFile();
             res.status(HttpCodes.SuccesfullRespons.Ok).end();
         } else {
             res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("bruker eksisterer allerede").end();
@@ -65,9 +83,7 @@ USER_API.post('/', (req, res, next) => {
     } else {
         res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
     }
-
-});
-
+ });
 
 USER_API.put('/:id', (req, res) => {
     const userId = req.params.id;
@@ -78,9 +94,10 @@ USER_API.put('/:id', (req, res) => {
     if (userIndex !== -1) {
 
         users[userIndex].name = name !== undefined ? name : users[userIndex].name;
+    
         users[userIndex].email = email !== undefined ? email : users[userIndex].email;
 
-
+        saveUsersToFile();
         res.status(HttpCodes.SuccesfullRespons.Ok).send("User updated successfully").end();
     } else {
         res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
@@ -90,13 +107,15 @@ USER_API.put('/:id', (req, res) => {
 
 
 USER_API.delete('/:id', (req, res) => {
+
     const userId = req.params.id;
 
     const userIndex = users.findIndex(user => user.id === userId);
 
     if (userIndex !== -1) {
         users.splice(userIndex, 1);
-        res.status(HttpCodes.SuccesfullRespons.Ok).send("Deleted Success").end();
+        saveUsersToFile();
+        res.status(HttpCodes.SuccesfullRespons.Ok).send("Deleted success").end();
     } else {
         res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
     }
