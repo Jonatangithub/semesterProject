@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     const darkModeCheckbox = document.getElementById("darkModeCheckbox");
-    darkModeCheckbox.addEventListener("change", function () {
+    darkModeCheckbox.addEventListener("change", function (event) {
         const isChecked = darkModeCheckbox.checked;
         setDarkMode(isChecked);
 
@@ -25,5 +25,5 @@ function setDarkMode(enabled) {
     } else {
         body.classList.remove("dark-mode");
     }
-    toggleMenu();
+    toggleMenu(event);
 }

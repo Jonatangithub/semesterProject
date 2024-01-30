@@ -1,10 +1,11 @@
 
     function makeChoice(userChoice) {
         const choices = ["rock", "paper", "scissors", "sponge", "water", "fire", "air", "gun", "human"];
-        
+            console.log(`User chose: ${userChoice}`)
+
         const computerChoice = choices[Math.floor(Math.random() * 9)];
 
-        document.getElementById('result-text').innerText = `You chose ${userChoice}.`;
+        document.getElementById('user-choice-text').innerText = `You chose ${userChoice}.`;
         document.getElementById('computer-choice-text').innerText = `Computer chose ${computerChoice}.`;
 
         const result = getResult(userChoice, computerChoice);
@@ -27,9 +28,10 @@
         if (user === computer) {
             return "It's a tie!";
         } else if (outcomes[user].beats.includes(computer)) {
-            return "You win!";
+            const beatingChoice = outcomes[user].beats.find(choice => choice === computer);
+            return `You win! ${user} beats ${computer}.`;
         } else {
-            return "You lose!";
+            const losingChoice = outcomes[user].losesTo.find(choice => choice === computer);
+            return `You lose! ${computer} beats ${user}.`;
         }
     }
-    

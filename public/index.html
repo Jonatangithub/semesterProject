@@ -7,115 +7,168 @@
     <title>RPS 2</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <script src="menu.mjs"></script>
+    <script type="module" src="menu.mjs"></script>
     <script src="game.mjs"></script>
-    <script src="settings.mjs"></script>
-<header>
-    <div id="menu-button">&#9776;</div>
-    <h1>Rock Paper Scissors 2:</h1>
-    <div id="options">
-        <a href="#profile" data-modal="profileModal">Profile</a>
-        <a href="#leaderboard" data-modal="leaderboardModal">Leaderboard</a>
-        <a href="#settings" data-modal="settingsModal">Settings</a>
-    </div>
-</header>
-<section>
-    <h2>Funny Text?</h2>
-    <p>.</p>
-    <div id="game">
-        <div id="user-choice">
-            <h3>Your Choice</h3>
-            <button onclick="makeChoice('rock')">Rock</button>
-            <button onclick="makeChoice('paper')">Paper</button>
-            <button onclick="makeChoice('scissors')">Scissors</button>
-            <button onclick="makeChoice('fire')">Fire</button>
-            <button onclick="makeChoice('water')">Water</button>
-            <button onclick="makeChoice('air')">Air</button>
-            <button onclick="makeChoice('sponge')">Sponge</button>
-            <button onclick="makeChoice('human')">Human</button>
-            <button onclick="makeChoice('gun')">Gun</button>
+    <script type="module" src="settings.mjs"></script>
+
+    <header>
+        <div id="menu-button">&#9776;</div>
+        <h1>Rock Paper Scissors 2:</h1>
+        <div id="options">
+            <a href="#register" data-modal="registerModal">Register</a>
+            <a href="#login" data-modal="loginModal">Login</a>
+            <a href="#leaderboard" data-modal="leaderboardModal">Leaderboard</a>
+            <a href="#settings" data-modal="settingsModal">Settings</a>
         </div>
-        <div id="result">
-            <h3>Result</h3>
-            <p id="result-text">Make your choice to start the game!</p>
+    </header>
+
+    <section>
+        <h2>PLAY!</h2>
+        <p>.</p>
+        <div id="game">
+            <div id="user-choice">
+                <h3>Your Choice</h3>
+                <button onclick="makeChoice('rock')">Rock</button>
+                <button onclick="makeChoice('paper')">Paper</button>
+                <button onclick="makeChoice('scissors')">Scissors</button>
+                <button onclick="makeChoice('fire')">Fire</button>
+                <button onclick="makeChoice('water')">Water</button>
+                <button onclick="makeChoice('air')">Air</button>
+                <button onclick="makeChoice('sponge')">Sponge</button>
+                <button onclick="makeChoice('human')">Human</button>
+                <button onclick="makeChoice('gun')">Gun</button>
+                <p id="user-choice-text"></p>
+            </div>
+
+            <div id="computer-choice">
+                <h3>Computer's Choice</h3>
+                <p id="computer-choice-text"></p>
+            </div>
+            <div id="result">
+                <h3>Result</h3>
+                <p id="result-text">Make your choice to start the game!</p>
+            </div>
         </div>
-        <div id="computer-choice">
-            <h3>Computer's Choice</h3>
-            <p id="computer-choice-text"></p>
+
+        <div id="leaderboardModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p>This is the Leaderboard.</p>
+            </div>
         </div>
-    </div>
-<div id="leaderboardModal" class="modal">
-<div class="modal-content">
-    <span class="close">&times;</span>
-    <p>This is the Leaderboard.</p>
-</div>
-</div>
 
-<div id="profileModal" class="modal">
-<div class="modal-content">
-    <span class="close">&times;</span>
-    <p>This is the Profile.</p>
-</div>
-</div>
+        <div id="registerModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>User Registration</h2>
+                <form id="registrationForm">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                    <p></p>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <p></p>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <p></p>
+                    <button type="button" onclick="registerUser()">Register</button>
+                </form>
+            </div>
+        </div>
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>User Login</h2>
+                <form id="loginForm">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" name="loginEmail" required>
+                    <p></p>
 
-<div id="settingsModal" class="modal">
-<div class="modal-content">
-    <span class="close">&times;</span>
-    <h3>These are the Settings.</h3>
-    <label for="darkModeCheckbox">Dark Mode</label>
-    <input type="checkbox" id="darkModeCheckbox">
-</div>
-</div>
-<h1>User Registration</h1>
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" name="loginPassword" required>
+                    <p></p>
 
-<form id="registrationForm">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required>
+                    <button type="button" onclick="loginUser()">Login</button>
+                </form>
+            </div>
+        </div>
+        <div id="settingsModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>These are the Settings</h3>
+                <label for="darkModeCheckbox">Dark Mode</label>
+                <input type="checkbox" id="darkModeCheckbox">
+            </div>
+        </div>
+    </section>
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
+    <footer>
+        <p>&copy; 2024 Rock Paper Scissors 2. All rights reserved.</p>
+    </footer>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
+    <script>
+        const apiURL = 'http://localhost:8080/user'
+        function registerUser() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
-    <button type="button" onclick="registerUser()">Register</button>
-</form>
-</section>
-<footer>
-    <p>&copy; 2024 Rock Paper Scissors 2. All rights reserved.</p>
-</footer>
-<body>
-<script>
-    const apiURL = 'http://localhost:8080/user'
-    function registerUser() {
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+            const user = {
+                name: name,
+                email: email,
+                password: password
+            };
 
-        const user = {
-            name: name,
-            email: email,
-            password: password
-        };
+            fetch(apiURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('User registered successfully');
+                    } else {
+                        console.error('Failed to register user');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        function loginUser() {
+    const loginEmail = document.getElementById('loginEmail').value;
+    const loginPassword = document.getElementById('loginPassword').value;
 
-        fetch(apiURL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(user)
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log('User registered successfully');
-            } else {
-                console.error('Failed to register user');
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
-</script>
+    // Assuming you have an endpoint for user login
+    const loginApiURL = 'http://localhost:8080/user/login';
+
+    const userCredentials = {
+        email: loginEmail,
+        password: loginPassword
+    };
+
+    fetch(loginApiURL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userCredentials)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log('User logged in successfully');
+            // You can perform additional actions, such as redirecting the user or updating UI
+        } else {
+            console.error('Failed to log in user');
+            // Handle login failure, show an error message, etc.
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+    </script>
 </body>
 
 </html>

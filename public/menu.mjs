@@ -1,47 +1,57 @@
-
-document.getElementById("menu-button").addEventListener("click", function () {
+export function toggleMenu(event) {
     var options = document.getElementById("options");
-    options.style.display = (options.style.display === "block") ? "none" : "block";
-});
+    var clickedTab = event.target;
 
-document.addEventListener("click", function (event) {
+    if (options.style.display === "block" && clickedTab.tagName === "A" && options.contains(clickedTab)) {
+        // If a tab is clicked while the menu is open, close the menu
+        options.style.display = "none";
+    } else {
+        // If the menu is closed or a non-tab element is clicked, toggle the menu
+        options.style.display = (options.style.display === "block") ? "none" : "block";
+    }
+}
+
+export function closeOptions(event) {
     var options = document.getElementById("options");
-    if (event.target !== document.getElementById("menu-button") && event.target !== options) {
+    if (event.target !== document.getElementById("menu-button") && !options.contains(event.target)) {
         options.style.display = "none";
     }
-});
+}
 
-document.querySelectorAll("#options a").forEach(function(option) {
-    option.addEventListener("click", function() {
-        var modalId = option.getAttribute("data-modal"); 
+document.getElementById("menu-button").addEventListener("click", toggleMenu);
+
+document.addEventListener("click", closeOptions);
+
+document.querySelectorAll("#options a").forEach(function (option) {
+    option.addEventListener("click", function (event) {
+        event.preventDefault();
+        var modalId = option.getAttribute("data-modal");
         var modal = document.getElementById(modalId);
+
+        // Close other tabs when opening a new one
+        document.querySelectorAll(".modal").forEach(function (otherModal) {
+            if (otherModal !== modal) {
+                otherModal.style.display = "none";
+            }
+        });
+
         modal.style.display = "block";
+        options.style.display = "none"; // Close the menu after opening a tab
     });
 });
 
-document.querySelectorAll(".modal .close").forEach(function(closeButton) {
-    closeButton.addEventListener("click", function() {
+document.querySelectorAll(".modal .close").forEach(function (closeButton) {
+    closeButton.addEventListener("click", function () {
         var modal = closeButton.closest(".modal");
         modal.style.display = "none";
     });
 });
 
-window.addEventListener("click", function(event) {
+window.addEventListener("click", function (event) {
     var modals = document.querySelectorAll(".modal");
-    modals.forEach(function(modal) {
+    modals.forEach(function (modal) {
         if (event.target === modal) {
             modal.style.display = "none";
         }
     });
 });
-export function toggleMenu() {
-    var options = document.getElementById("options");
-    options.style.display = (options.style.display === "block") ? "none" : "block";
-}
-
-export function closeOptions(event) {
-    var options = document.getElementById("options");
-    if (event.target !== document.getElementById("menu-button") && event.target !== options) {
-        options.style.display = "none";
-    }
-}
