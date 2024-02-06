@@ -17,6 +17,9 @@ class HTTPCodes {
         MethodNotAllowed: 405,
         NotAcceptable: 406
     }
+    static ServerSideErrorRespons = {
+        InternalServerError: 500
+    }
 
 }
 

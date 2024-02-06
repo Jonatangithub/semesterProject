@@ -141,8 +141,7 @@
     const loginEmail = document.getElementById('loginEmail').value;
     const loginPassword = document.getElementById('loginPassword').value;
 
-    // Assuming you have an endpoint for user login
-    const loginApiURL = 'http://localhost:8080/user/login';
+    const loginApiURL = 'http://localhost:8080/user/login'; //temp
 
     const userCredentials = {
         email: loginEmail,
@@ -159,10 +158,10 @@
     .then(response => {
         if (response.ok) {
             console.log('User logged in successfully');
-            // You can perform additional actions, such as redirecting the user or updating UI
+
         } else {
             console.error('Failed to log in user');
-            // Handle login failure, show an error message, etc.
+
         }
     })
     .catch(error => console.error('Error:', error));
