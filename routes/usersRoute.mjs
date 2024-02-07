@@ -1,7 +1,8 @@
 import express, { response } from "express";
 import User from "../modules/user.mjs";
-import HttpCodes from "../modules/httpErrorCodes.mjs";
+import { HTTPCodes, HTTPMethods } from "../modules/httpConstants.mjs";
 import fs from 'fs';
+import {saveUsersToFile, checkUserExists} from "./userLogic.mjs"
 
 const USER_API = express.Router();
 
@@ -27,23 +28,6 @@ try {
   console.log('Error reading users file:', err.message);
 }
 
-function saveUsersToFile(req, res, next) {
-    fs.writeFileSync('users.json', JSON.stringify(users), 'utf8', (err) => {
-        if (err) {
-            console.log('Error writing users file:', err.message);
-            return res.status(HttpCodes.ServerSideErrorRespons.InternalServerError).send("Error saving users").end();
-        }
-        next();
-    });
-}
-function checkUserExists(req, res, next) {
-    const { email } = req.body;
-    const exists = users.some(user => user.email === email);
-    if (exists) {
-        return res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("User already exists").end();
-    }
-    next();
-}
 
 // let generatedId = generateRandomId(10);
 
@@ -51,17 +35,17 @@ USER_API.get('/:id', (req, res) => {
     const userId = req.params.id;
     const user = users.find(user => user.id === userId);
     if (user) {
-        res.status(HttpCodes.SuccesfullRespons.Ok).send(user).end();
+        res.status(HTTPCodes.SuccesfullRespons.Ok).send(user).end();
     } else {
-        res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
     }
 });
 
 USER_API.get('/', (req, res) => {
-    res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
+    res.status(HTTPCodes.SuccesfullRespons.Ok).send(users).end();
 });
 
-USER_API.post('/', checkUserExists, saveUsersToFile, (req, res) => {
+USER_API.post('/', checkUserExists, (req, res) => {
     const { name, email, password } = req.body;
     if (name && email && password) {
         const user = new User();
@@ -70,39 +54,55 @@ USER_API.post('/', checkUserExists, saveUsersToFile, (req, res) => {
         user.id = generateRandomId(7);
         user.pswHash = password;
         users.push(user);
-        res.status(HttpCodes.SuccesfullRespons.Ok).end();
-        
+        saveUsersToFile(users, req, res, () => {
+            res.status(HTTPCodes.SuccesfullRespons.Ok).end();
+        });
     } else {
-        res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Missing data field").end();
+        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Missing data field").end();
     }
 });
 
- USER_API.put('/:id', (req, res) => {
+USER_API.put('/:id', (req, res) => {
     const userId = req.params.id;
     const { name, email, password } = req.body;
+    
+    // Check if the userId is received
+    console.log("Received userId:", userId);
+    
     const userIndex = users.findIndex(user => user.id === userId);
+    
+    // Check if the user with the provided userId exists
     if (userIndex !== -1) {
+        // Log the user details before updating
+        console.log("Existing user details:", users[userIndex]);
+        
+        // Update the user's properties
         users[userIndex].name = name !== undefined ? name : users[userIndex].name;
         users[userIndex].email = email !== undefined ? email : users[userIndex].email;
-        res.status(HttpCodes.SuccesfullRespons.Ok).send("User updated successfully").end();
+        users[userIndex].pswHash = password !== undefined ? password : users[userIndex].pswHash;
+        
+        // Log the updated user details
+        console.log("Updated user details:", users[userIndex]);
+        
+        // Save the changes to the JSON file
+        saveUsersToFile(users, req, res, () => {
+            res.status(HTTPCodes.SuccesfullRespons.Ok).send("User updated successfully").end();
+        });
     } else {
-        res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
     }
 });
 
 
-USER_API.delete('/:id', (req, res) => {
-
+USER_API.delete('/:id', (req, res, next) => {
     const userId = req.params.id;
-
     const userIndex = users.findIndex(user => user.id === userId);
-
     if (userIndex !== -1) {
         users.splice(userIndex, 1);
-        saveUsersToFile();
-        res.status(HttpCodes.SuccesfullRespons.Ok).send("Deleted success").end();
+        saveUsersToFile(users, req, res, next); // Pass the updated users array
+        res.status(HTTPCodes.SuccesfullRespons.Ok).send("Deleted success").end();
     } else {
-        res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
     }
 });
 

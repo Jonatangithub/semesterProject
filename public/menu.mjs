@@ -3,10 +3,9 @@ export function toggleMenu(event) {
     var clickedTab = event.target;
 
     if (options.style.display === "block" && clickedTab.tagName === "A" && options.contains(clickedTab)) {
-        // If a tab is clicked while the menu is open, close the menu
         options.style.display = "none";
     } else {
-        // If the menu is closed or a non-tab element is clicked, toggle the menu
+
         options.style.display = (options.style.display === "block") ? "none" : "block";
     }
 }
@@ -28,7 +27,7 @@ document.querySelectorAll("#options a").forEach(function (option) {
         var modalId = option.getAttribute("data-modal");
         var modal = document.getElementById(modalId);
 
-        // Close other tabs when opening a new one
+
         document.querySelectorAll(".modal").forEach(function (otherModal) {
             if (otherModal !== modal) {
                 otherModal.style.display = "none";
@@ -36,7 +35,7 @@ document.querySelectorAll("#options a").forEach(function (option) {
         });
 
         modal.style.display = "block";
-        options.style.display = "none"; // Close the menu after opening a tab
+        options.style.display = "none"; 
     });
 });
 
