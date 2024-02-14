@@ -1,5 +1,5 @@
 import express from 'express' // Express is installed using npm
-import { registerUser } from './public/index.html'; // Import the function to handle user registration
+import { registerUser } from './routes/userLogic.mjs'; // Import the function to handle user registration
 import superLogger from './modules/superLogger.mjs';
 
 // Creating an instance of the server
