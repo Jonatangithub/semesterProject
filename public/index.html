@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
+    <script>
+        import registerUser from '..routes/userLogic.mjs'
+        const apiURL = 'http://localhost:8080/user';
+    </script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -90,38 +93,6 @@
     <footer>
         <p>&copy; 2024 Rock Paper Scissors 2. All rights reserved.</p>
     </footer>
-
-    <script>
-        const apiURL = 'http://localhost:8080/user';
-
-        export function registerUser() {
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            const user = {
-                name: name,
-                email: email,
-                password: password
-            };
-
-            fetch(apiURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(user)
-            })
-                .then(response => {
-                    if (response.ok) {
-                        console.log('User registered successfully');
-                    } else {
-                        console.error('Failed to register user');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        }
-    </script>
 </body>
 
 </html>

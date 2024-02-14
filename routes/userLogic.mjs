@@ -42,5 +42,32 @@ export async function saveUsersToDatabase(users, req, res, next) {
         return res.status(HTTPCodes.ServerSideErrorRespons.InternalServerError).send("Error saving users").end();
     }
 }
+export function registerUser() {
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    const user = {
+        name: name,
+        email: email,
+        password: password
+    };
+
+    fetch(apiURL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+    })
+        .then(response => {
+            if (response.ok) {
+                console.log('User registered successfully');
+            } else {
+                console.error('Failed to register user');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
 
 
