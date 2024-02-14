@@ -2,7 +2,7 @@ import express, { response } from "express";
 import User from "../modules/user.mjs";
 import { HTTPCodes, HTTPMethods } from "../modules/httpConstants.mjs";
 import fs from 'fs';
-import {saveUsersToFile, checkUserExists} from "./userLogic.mjs"
+import {saveUsersToDatabase, checkUserExists} from "./userLogic.mjs"
 
 const USER_API = express.Router();
 
@@ -54,7 +54,7 @@ USER_API.post('/register', checkUserExists, (req, res) => {
         user.id = generateRandomId(7);
         user.pswHash = password;
         users.push(user);
-        saveUsersToFile(users, req, res, () => {
+        saveUsersToDatabase(users, req, res, () => {
             res.status(HTTPCodes.SuccesfullRespons.Ok).end();
         });
     } else {
@@ -85,7 +85,7 @@ USER_API.put('/:id', (req, res) => {
         console.log("Updated user details:", users[userIndex]);
         
         // Save the changes to the JSON file
-        saveUsersToFile(users, req, res, () => {
+        saveUsersToDatabase(users, req, res, () => {
             res.status(HTTPCodes.SuccesfullRespons.Ok).send("User updated successfully").end();
         });
     } else {
@@ -99,7 +99,7 @@ USER_API.delete('/:id', (req, res, next) => {
     const userIndex = users.findIndex(user => user.id === userId);
     if (userIndex !== -1) {
         users.splice(userIndex, 1);
-        saveUsersToFile(users, req, res, next); // Pass the updated users array
+        saveUsersToDatabase(users, req, res, next); // Pass the updated users array
         res.status(HTTPCodes.SuccesfullRespons.Ok).send("Deleted success").end();
     } else {
         res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
