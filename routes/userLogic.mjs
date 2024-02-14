@@ -58,7 +58,7 @@ export async function registerUser() {
         email: email,
         password: password
     };
-    const apiURL ='https://main-4iku.onrender.com/user/register'
+    const apiURL ='https://main-4iku.onrender.com'
     try {
         const response = await fetch(apiURL, {
             method: 'POST',
