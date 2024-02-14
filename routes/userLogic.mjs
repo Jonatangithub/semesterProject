@@ -1,6 +1,7 @@
-import { Pool } from 'pg';
 import User from "../modules/user.mjs";
 import { HTTPCodes } from "../modules/httpConstants.mjs";
+import pkg from 'pg';
+const { Pool } = pkg;
 
 // Create a PostgreSQL pool
 const pool = new Pool({
