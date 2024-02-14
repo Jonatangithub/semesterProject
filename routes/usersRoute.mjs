@@ -45,7 +45,7 @@ USER_API.get('/', (req, res) => {
     res.status(HTTPCodes.SuccesfullRespons.Ok).send(users).end();
 });
 
-USER_API.post('/', checkUserExists, (req, res) => {
+USER_API.post('/register', checkUserExists, (req, res) => {
     const { name, email, password } = req.body;
     if (name && email && password) {
         const user = new User();

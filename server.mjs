@@ -1,5 +1,5 @@
 import express from 'express' // Express is installed using npm
-import USER_API from './routes/usersRoute.mjs'; // This is where we have defined the API for working with users.
+import { registerUser } from './routes/usersRoute.mjs'; // Import the function to handle user registration
 import superLogger from './modules/superLogger.mjs';
 
 // Creating an instance of the server
@@ -19,6 +19,16 @@ server.use(express.static('public'));
 // Telling the server to use the USER_API (all urls that uses this code will have to have the /user after the base address)
 server.use("/user", USER_API);
 
+server.post("/register", async (req, res) => {
+    try {
+        const userData = req.body;
+        await registerUser(userData);
+        res.status(200).send("User registered successfully").end();
+    } catch (error) {
+        console.error('Error registering user:', error);
+        res.status(500).send("Failed to register user").end();
+    }
+});
 // A get request handler example)
 server.get("/", (req, res, next) => {
     req.originalUrl

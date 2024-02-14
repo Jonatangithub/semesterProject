@@ -18,7 +18,6 @@
         <h1>Rock Paper Scissors 2:</h1>
         <div id="options">
             <a href="#register" data-modal="registerModal">Register</a>
-            <a href="#login" data-modal="loginModal">Login</a>
             <a href="#leaderboard" data-modal="leaderboardModal">Leaderboard</a>
             <a href="#settings" data-modal="settingsModal">Settings</a>
         </div>
@@ -63,37 +62,21 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>User Registration</h2>
-                <form id="registrationForm">
+                <form id="addUserForm">
                     <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
+                    <input type="text" id="name" name="Name" required>
                     <p></p>
                     <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="email" name="Email" required>
                     <p></p>
                     <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="password" name="Password" required>
                     <p></p>
                     <button type="button" onclick="registerUser()">Register</button>
                 </form>
             </div>
         </div>
-        <div id="loginModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>User Login</h2>
-                <form id="loginForm">
-                    <label for="loginEmail">Email:</label>
-                    <input type="email" id="loginEmail" name="loginEmail" required>
-                    <p></p>
 
-                    <label for="loginPassword">Password:</label>
-                    <input type="password" id="loginPassword" name="loginPassword" required>
-                    <p></p>
-
-                    <button type="button" onclick="loginUser()">Login</button>
-                </form>
-            </div>
-        </div>
         <div id="settingsModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
@@ -109,7 +92,8 @@
     </footer>
 
     <script>
-        const apiURL = 'http://localhost:8080/user'
+        const apiURL = 'http://localhost:8080/user';
+
         function registerUser() {
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
@@ -137,36 +121,6 @@
                 })
                 .catch(error => console.error('Error:', error));
         }
-        function loginUser() {
-    const loginEmail = document.getElementById('loginEmail').value;
-    const loginPassword = document.getElementById('loginPassword').value;
-
-    const loginApiURL = 'http://localhost:8080/user/login'; //temp
-
-    const userCredentials = {
-        email: loginEmail,
-        password: loginPassword
-    };
-
-    fetch(loginApiURL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userCredentials)
-    })
-    .then(response => {
-        if (response.ok) {
-            console.log('User logged in successfully');
-
-        } else {
-            console.error('Failed to log in user');
-
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
-
     </script>
 </body>
 
