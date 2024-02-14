@@ -4,7 +4,7 @@ import { HTTPCodes, HTTPMethods } from "../modules/httpConstants.mjs";
 import fs from 'fs';
 import {saveUsersToDatabase, checkUserExists} from "./userLogic.mjs"
 
-const USER_API = express.Router();
+export const USER_API = express.Router();
 
 function generateRandomId(length) {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';

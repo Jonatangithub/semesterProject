@@ -1,6 +1,7 @@
 import express from 'express' // Express is installed using npm
 import { registerUser } from './routes/userLogic.mjs'; // Import the function to handle user registration
 import superLogger from './modules/superLogger.mjs';
+import USER_API from './routes/usersRoute.mjs'
 
 // Creating an instance of the server
 const server = express();
