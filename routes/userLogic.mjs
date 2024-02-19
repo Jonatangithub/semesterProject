@@ -5,10 +5,10 @@ const { Pool } = pkg;
 
 // Create a PostgreSQL pool
 const pool = new Pool({
-    user: 'your_username',
+    user: 'mainsemesterproject_user',
     host: 'localhost',
-    database: 'your_database_name',
-    password: 'your_password',
+    database: 'mainsemesterproject',
+    password: 'ffu5lIk1dweCmBawrmWMdXWtLHG8IdRK',
     port: 5432, // Default PostgreSQL port
 });
 
