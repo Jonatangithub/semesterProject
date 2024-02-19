@@ -1,5 +1,5 @@
-import pkg from 'pg';
-const { Pool } = pkg;
+
+const { Pool } = 'pg';
 
 const pool = new Pool({
     user: 'mainsemesterproject_user',
