@@ -12,6 +12,7 @@
     <script type="module" src="menu.mjs"></script>
     <script src="game.mjs"></script>
     <script type="module" src="settings.mjs"></script>
+    <script type="module" src="../modules/dbManager.mjs"></script>
     <script></script>
 
     <header>
@@ -73,7 +74,7 @@
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="Password" required>
                     <p></p>
-                    <button type="button" onclick="registerUser()">Register</button>
+                    <button type="button" onclick="insertUser(username, email, password)">Register</button>
                 </form>
             </div>
         </div>
