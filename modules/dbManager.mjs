@@ -1,12 +1,14 @@
-import { Pool } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
 
 const pool = new Pool({
-    user: mainsemesterproject_user,
-    host: dpg-cn4uf35jm4es73bqsh70-a,
-    database: mainsemesterproject,
-    password: ffu5lIk1dweCmBawrmWMdXWtLHG8IdRK,
+    user: 'mainsemesterproject_user',
+    host: 'dpg-cn4uf35jm4es73bqsh70-a',
+    database: 'mainsemesterproject',
+    password: 'ffu5lIk1dweCmBawrmWMdXWtLHG8IdRK',
     port: 5432,
 });
+
 export async function insertUser(username, email, password) {
     try {
         const client = await pool.connect();
