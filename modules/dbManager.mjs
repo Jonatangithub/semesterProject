@@ -1,5 +1,7 @@
+import pg from 'pg';
+import dotenv from 'dotenv';
 
-const { Pool } = 'pg';
+const { Pool } = pg;
 
 const pool = new Pool({
     user: 'mainsemesterproject_user',
