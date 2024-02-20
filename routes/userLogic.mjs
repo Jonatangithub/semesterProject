@@ -1,18 +1,7 @@
 import User from "../modules/user.mjs";
 import { HTTPCodes } from "../modules/httpConstants.mjs";
-import pkg from 'pg';
-const { Pool } = pkg;
 
-// Create a PostgreSQL pool
-const pool = new Pool({
-    user: 'mainsemesterproject_user',
-    host: 'localhost',
-    database: 'mainsemesterproject',
-    password: 'ffu5lIk1dweCmBawrmWMdXWtLHG8IdRK',
-    port: 5432, // Default PostgreSQL port
-});
 
-// Check if user exists in the database
 export async function checkUserExists(req, res, next) {
     const { email } = req.body;
     try {
@@ -34,7 +23,7 @@ export async function saveUsersToDatabase(users, req, res, next) {
     const values = users.map(user => [user.name, user.email, user.password]);
     try {
         const client = await pool.connect();
-        await client.query('INSERT INTO users (name, email, password) VALUES $1', [values]);
+        await client.query('INSERT INTO users (name, email, password) VALUES ($1, $2, $3)', values);
         client.release();
         next();
     } catch (error) {
@@ -42,17 +31,6 @@ export async function saveUsersToDatabase(users, req, res, next) {
         return res.status(HTTPCodes.ServerSideErrorRespons.InternalServerError).send("Error saving users").end();
     }
 }
-export async function registerUser() {
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    // Form validation
-    if (!name || !email || !password) {
-        console.error('Please fill in all fields');
-        return; // Prevent further execution if fields are missing
-    }
-
     const user = {
         name: name,
         email: email,
@@ -79,7 +57,7 @@ export async function registerUser() {
         console.error('Error:', error);
         // Optionally, display an error message to the user
     }
-}
+
 
 
 

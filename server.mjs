@@ -1,9 +1,20 @@
+import 'dotenv/config'
 import express from 'express' // Express is installed using npm
-import { registerUser } from './routes/userLogic.mjs'; // Import the function to handle user registration
+import { createUser } from './modules/storageManager.mjs'; // Import the function to handle user registration
 import superLogger from './modules/superLogger.mjs';
 import USER_API from './routes/usersRoute.mjs'
+import { Pool } from 'pg';
 
 // Creating an instance of the server
+const pool = new Pool({
+    user: 'mainsemesterproject_user',
+    host: 'localhost',
+    database: 'mainsemesterproject',
+    password: 'ffu5lIk1dweCmBawrmWMdXWtLHG8IdRK',
+    port: '5432',
+});
+
+
 const server = express();
 // Selecting a port for the server to use.
 const port = (process.env.PORT || 8080);
@@ -23,7 +34,7 @@ server.use("/user", USER_API);
 server.post("/register", async (req, res) => {
     try {
         const userData = req.body;
-        await registerUser(userData);
+        await createUser(userData);
         res.status(200).send("User registered successfully").end();
     } catch (error) {
         console.error('Error registering user:', error);

@@ -11,6 +11,32 @@
     <script type="module" src="menu.mjs"></script>
     <script src="game.mjs"></script>
     <script type="module" src="settings.mjs"></script>
+    <script type="module">
+    // import storageManager from '../modules/storageManager.mjs';
+
+// Assuming dbManager is an instance of DBManager created using the exported constructor
+
+// Function to handle button click event
+function handleCreateUser() {
+    // Your logic here
+    // For example:
+    const user = {
+        name: 'John Doe',
+        email: 'john@example.com',
+        pswHash: 'hashedPassword'
+    };
+    dbManager.createUser(user)
+        .then(createdUser => {
+            console.log('User created successfully:', createdUser);
+            // Do something with the created user
+        })
+        .catch(error => {
+            console.error('Error creating user:', error);
+            // Handle error
+        });
+}
+
+    </script>
     <header>
         <div id="menu-button">&#9776;</div>
         <h1>Rock Paper Scissors 2:</h1>
@@ -70,7 +96,7 @@
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="Password" required>
                     <p></p>
-                    <button type="button" onclick="registerUser()">Register</button>
+                    <button type="button" onclick="handleCreateUser()">Register</button>
                 </form>
             </div>
         </div>
