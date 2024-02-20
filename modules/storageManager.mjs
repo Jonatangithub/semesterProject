@@ -1,4 +1,4 @@
-import { Client as PgClient } from "pg"
+// import { Client as PgClient } from "pg"
 import superLogger from "./superLogger.mjs";
 
 // We are using an enviorment variable to get the db credentials 
