@@ -66,30 +66,30 @@ class DBManager {
     }
 
     async createUser(user) {
-
         const client = new pg.Client(this.#credentials);
-
+    
         try {
             await client.connect();
             const output = await client.query('INSERT INTO "public"."Users"("name", "email", "password") VALUES($1::Text, $2::Text, $3::Text) RETURNING id;', [user.name, user.email, user.pswHash]);
-
+    
             // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
-            // Of special intrest is the rows and rowCount properties of this object.
-
-            if (output.rows.length == 1) {
+            // Of special interest is the rows and rowCount properties of this object.
+    
+            if (output.rows.length === 1) {
                 // We stored the user in the DB.
                 user.id = output.rows[0].id;
+            } else {
+                throw new Error("Failed to create user");
             }
-
+    
         } catch (error) {
             console.error(error);
-            //TODO : Error handling?? Remember that this is a module seperate from your server 
+            throw new Error("Failed to create user"); // Throw the error to the calling code
         } finally {
             client.end(); // Always disconnect from the database.
         }
-
+    
         return user;
-
     }
 
 }
