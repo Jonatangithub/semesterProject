@@ -1,32 +1,48 @@
-
-import DBManager from "./storageManager.mjs";
+import DBManager from "./storageHandler.mjs";
 
 class User {
 
   constructor() {
-    ///TODO: Are these the correct fields for your project?
+    //TODO: Add username and avatar
     this.email;
     this.pswHash;
     this.name;
     this.id;
   }
 
+  static async authenticate(email, password) {
+    const user = await DBManager.authenticateUser(email, password);
+    return user;
+  }
+
+  async getUsers() {
+    const users = await DBManager.getAllUsers()
+    return users;
+  }
+
   async save() {
-
-    /// TODO: What happens if the DBManager fails to complete its task?
-
-    // We know that if a user object dos not have the ID, then it cant be in the DB.
-    if (this.id == null) {
-      return await DBManager.createUser(this);
+    if (this.id) {
+      try {
+        const updateResult = await DBManager.updateUser(this);
+        return updateResult.rowCount > 0;
+      }
+      catch (error) {
+        throw error;
+      }
     } else {
-      return await DBManager.updateUser(this);
+      await DBManager.createUser(this);
     }
   }
 
-  delete() {
-
+  async delete() {
     /// TODO: What happens if the DBManager fails to complete its task?
-    DBManager.deleteUser(this);
+    try {
+      const deletionResult = await DBManager.deleteUser(this);
+      return deletionResult.rowCount > 0;
+    }
+    catch (error) {
+      throw error;
+    }
   }
 }
 

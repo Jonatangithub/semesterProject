@@ -2,7 +2,7 @@ import express, { response } from "express";
 import User from "../modules/user.mjs";
 import { HTTPCodes, HTTPMethods } from "../modules/httpConstants.mjs";
 import fs from 'fs';
-import {saveUsersToDatabase, checkUserExists} from "./userLogic.mjs"
+// import {saveUsersToDatabase, checkUserExists} from "./userLogic.mjs"
 
 export const USER_API = express.Router();
 
@@ -51,7 +51,7 @@ USER_API.post('/register', checkUserExists, (req, res) => {
         user.id = generateRandomId(7);
         user.pswHash = password;
         users.push(user);
-        saveUsersToDatabase(users, req, res, () => {
+        createUser(users, req, res, () => {
             res.status(HTTPCodes.SuccesfullRespons.Ok).end();
         });
     } else {
