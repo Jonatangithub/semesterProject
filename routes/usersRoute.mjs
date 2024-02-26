@@ -28,9 +28,6 @@ try {
   console.log('Error reading users file:', err.message);
 }
 
-
-// let generatedId = generateRandomId(10);
-
 USER_API.get('/:id', (req, res) => {
     const userId = req.params.id;
     const user = users.find(user => user.id === userId);

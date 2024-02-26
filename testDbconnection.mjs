@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 // Load environment variables from .env file
 dotenv.config();
 
-// Function to test the database connection
+
 async function testDbConnection() {
     const client = new pg.Client({
         host: process.env.DB_HOST,
@@ -15,7 +15,7 @@ async function testDbConnection() {
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         ssl: {
-            rejectUnauthorized: false // Disables SSL certificate validation for Render
+            rejectUnauthorized: false
         }
     });
 
@@ -29,5 +29,5 @@ async function testDbConnection() {
     }
 }
 
-// Call the function to test the database connection
+
 testDbConnection();

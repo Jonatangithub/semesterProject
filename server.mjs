@@ -1,9 +1,12 @@
 import express from 'express';
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import pkg from 'pg';
 import DBManager from './modules/storageManager.mjs';
 import superLogger from './modules/superLogger.mjs';
 import USER_API from './routes/usersRoute.mjs';
+import printDeveloperStartupInportantInformationMSG from "./modules/developerHelpers.mjs";
+
+printDeveloperStartupInportantInformationMSG();
 
 // Load environment variables from .env file
 dotenv.config();
@@ -18,7 +21,7 @@ try {
         password: process.env.DB_PASSWORD,
         port: process.env.DB_PORT,
         ssl: {
-            rejectUnauthorized: false // Disables SSL certificate validation for Render
+            rejectUnauthorized: false
         }
     });
 
