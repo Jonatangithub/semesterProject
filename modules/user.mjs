@@ -1,4 +1,4 @@
-import DBManager from "./storageHandler.mjs";
+import DBManager from "./storageManager.mjs";
 
 class User {
 
