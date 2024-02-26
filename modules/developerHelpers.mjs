@@ -1,4 +1,4 @@
-import superLogger from "superLogger.mjs";
+import superLogger from "./superLogger.mjs";
 import chalk from "chalk";
 
 export default function printDeveloperStartupInportantInformationMSG() {
