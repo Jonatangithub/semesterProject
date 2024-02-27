@@ -1,4 +1,4 @@
-import pg from 'pg';
+/* import pg from 'pg';
 import dotenv from 'dotenv';
 
 const { Pool } = pg;
@@ -14,4 +14,4 @@ const pool = new Pool({
     } : false,
   });
 
-export default pool;
+export default pool; */

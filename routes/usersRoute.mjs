@@ -1,107 +1,72 @@
-import express, { response } from "express";
+import express from "express";
 import User from "../modules/user.mjs";
-import { HTTPCodes, HTTPMethods } from "../modules/httpConstants.mjs";
-import fs from 'fs';
-// import {saveUsersToDatabase, checkUserExists} from "./userLogic.mjs"
+import { HTTPCodes } from "../modules/httpConstants.mjs";
+import superLogger from "../modules/superLogger.mjs";
 
-export const USER_API = express.Router();
 
-function generateRandomId(length) {
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-    let randomId;
+const USER_API = express.Router();
+USER_API.use(express.json()); // This makes it so that express parses all incoming payloads as JSON for this route.
 
-    do {
-        randomId = '';
-        for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * alphabet.length);
-            randomId += alphabet.charAt(randomIndex);
-        }
-    } while (users.some(user => user.id === randomId));
+const users = [];
 
-    return randomId;
-}
-let users = [];
-try {
-  const data = fs.readFileSync('users.json', 'utf8');
-  users = JSON.parse(data);
-} catch (err) {
-  console.log('Error reading users file:', err.message);
-}
+USER_API.get('/', (req, res, next) => {
+    superLogger.log("Demo of logging tool");
+    superLogger.log("A important msg", superLogger.LOGGING_LEVELS.CRTICAL);
+})
 
-USER_API.get('/:id', (req, res) => {
-    const userId = req.params.id;
-    const user = users.find(user => user.id === userId);
-    if (user) {
-        res.status(HTTPCodes.SuccesfullRespons.Ok).send(user).end();
-    } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
-    }
-});
 
-USER_API.get('/', (req, res) => {
-    res.status(HTTPCodes.SuccesfullRespons.Ok).send(users).end();
-});
+USER_API.get('/:id', (req, res, next) => {
 
-USER_API.post('/register', checkUserExists, (req, res) => {
+    // Tip: All the information you need to get the id part of the request can be found in the documentation 
+    // https://expressjs.com/en/guide/routing.html (Route parameters)
+
+    /// TODO: 
+    // Return user object
+})
+
+USER_API.post('/register', async (req, res) => {
+
+    // This is using javascript object destructuring.
+    // Recomend reading up https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#syntax
+    // https://www.freecodecamp.org/news/javascript-object-destructuring-spread-operator-rest-parameter/
     const { name, email, password } = req.body;
-    if (name && email && password) {
-        const user = new User();
+
+
+    if (name != "" && email != "" && password != "") {
+        let user = new User();
         user.name = name;
         user.email = email;
-        user.id = generateRandomId(7);
+
+        ///TODO: Do not save passwords.
         user.pswHash = password;
-        users.push(user);
-        createUser(users, req, res, () => {
-            res.status(HTTPCodes.SuccesfullRespons.Ok).end();
-        });
+
+        ///TODO: Does the user exist?
+        let exists = false;
+
+        if (!exists) {
+            //TODO: What happens if this fails?
+            user = await user.save();
+            res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(user)).end();
+        } else {
+            res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).end();
+        }
+
     } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Missing data field").end();
+        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
     }
+
 });
 
-USER_API.put('/:id', (req, res) => {
-    const userId = req.params.id;
-    const { name, email, password } = req.body;
-    
-    // Check if the userId is received
-    console.log("Received userId:", userId);
-    
-    const userIndex = users.findIndex(user => user.id === userId);
-    
-    // Check if the user with the provided userId exists
-    if (userIndex !== -1) {
-        // Log the user details before updating
-        console.log("Existing user details:", users[userIndex]);
-        
-        // Update the user's properties
-        users[userIndex].name = name !== undefined ? name : users[userIndex].name;
-        users[userIndex].email = email !== undefined ? email : users[userIndex].email;
-        users[userIndex].pswHash = password !== undefined ? password : users[userIndex].pswHash;
-        
-        // Log the updated user details
-        console.log("Updated user details:", users[userIndex]);
-        
-        // Save the changes to the JSON file
-        saveUsersToDatabase(users, req, res, () => {
-            res.status(HTTPCodes.SuccesfullRespons.Ok).send("User updated successfully").end();
-        });
-    } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
-    }
+USER_API.post('/:id', (req, res, next) => {
+    /// TODO: Edit user
+    const user = new User(); //TODO: The user info comes as part of the request 
+    user.save();
 });
 
-
-USER_API.delete('/:id', (req, res, next) => {
-    const userId = req.params.id;
-    const userIndex = users.findIndex(user => user.id === userId);
-    if (userIndex !== -1) {
-        users.splice(userIndex, 1);
-        saveUsersToDatabase(users, req, res, next); // Pass the updated users array
-        res.status(HTTPCodes.SuccesfullRespons.Ok).send("Deleted success").end();
-    } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
-    }
+USER_API.delete('/:id', (req, res) => {
+    /// TODO: Delete user.
+    const user = new User(); //TODO: Actual user
+    user.delete();
 });
-
 
 export default USER_API
