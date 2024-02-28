@@ -91,6 +91,19 @@ class DBManager {
         return user;
 
     }
+    async getAllUsers() {
+        const client = new pg.Client(this.#credentials);
+        try {
+            await client.connect();
+            const result = await client.query('Select * from "public"."Users";');
+            return result.rows;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        } finally {
+            client.end();
+        }
+    }
 
 }
 

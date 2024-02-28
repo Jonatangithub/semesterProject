@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,24 +12,29 @@
     <script type="module" src="menu.mjs"></script>
     <script src="game.mjs"></script>
     <script type="module" src="settings.mjs"></script>
-    <script type="module">
-// Function to handle button click event
-function handleCreateUser() {
-    const user = {
-        name: 'John Doe',
-        email: 'john@example.com',
-        pswHash: 'hashedPassword'
-    };
-    dbManager.createUser(user)
-        .then(createdUser => {
-            console.log('User created successfully:', createdUser);
-            // Do something with the created user
-        })
-        .catch(error => {
-            console.error('Error creating user:', error);
-            // Handle error
-        });
-}
+    <script>
+        // Function to handle button click event
+        function handleCreateUser() {
+            const user = {
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                password: document.getElementById("password").value
+            };
+
+            fetch('http://localhost:3000/user/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user),
+            })
+                .then(response => {
+                    console.log('Response:', response);
+                    console.log("hwere")
+                    return response.json(); // assuming the response is JSON
+                })
+        }
+
 
     </script>
     <header>

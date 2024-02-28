@@ -7,12 +7,12 @@ import superLogger from "../modules/superLogger.mjs";
 const USER_API = express.Router();
 USER_API.use(express.json()); // This makes it so that express parses all incoming payloads as JSON for this route.
 
-const users = [];
-
-USER_API.get('/', (req, res, next) => {
-    superLogger.log("Demo of logging tool");
-    superLogger.log("A important msg", superLogger.LOGGING_LEVELS.CRTICAL);
-})
+USER_API.get('/', async (req, res) => {
+    console.log("here")
+    const user = new User();
+    const users = await user.getUsers();
+    res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(users)).end();
+});
 
 
 USER_API.get('/:id', (req, res, next) => {
@@ -24,8 +24,8 @@ USER_API.get('/:id', (req, res, next) => {
     // Return user object
 })
 
-USER_API.post('/register', async (req, res) => {
-
+USER_API.post('/register', async (req, res, next) => {
+    console.log("here")
     // This is using javascript object destructuring.
     // Recomend reading up https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#syntax
     // https://www.freecodecamp.org/news/javascript-object-destructuring-spread-operator-rest-parameter/
