@@ -2,6 +2,7 @@ import express from "express";
 import User from "../modules/user.mjs";
 import { HTTPCodes } from "../modules/httpConstants.mjs";
 import superLogger from "../modules/superLogger.mjs";
+import DBManager from "../modules/storageManager.mjs";
 
 
 const USER_API = express.Router();
@@ -24,38 +25,87 @@ USER_API.get('/:id', (req, res, next) => {
     // Return user object
 })
 
-USER_API.post('/register', async (req, res, next) => {
-    console.log("here")
-    // This is using javascript object destructuring.
-    // Recomend reading up https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#syntax
-    // https://www.freecodecamp.org/news/javascript-object-destructuring-spread-operator-rest-parameter/
-    const { name, email, password } = req.body;
+// your registration endpoint
 
+USER_API.post('/login', async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
 
-    if (name != "" && email != "" && password != "") {
-        let user = new User();
-        user.name = name;
-        user.email = email;
-
-        ///TODO: Do not save passwords.
-        user.pswHash = password;
-
-        ///TODO: Does the user exist?
-        let exists = false;
-
-        if (!exists) {
-            //TODO: What happens if this fails?
-            user = await user.save();
-            res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(user)).end();
-        } else {
-            res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).end();
+        if (!email || !password) {
+            return res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Email and password are required").end();
         }
 
-    } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
-    }
+        // Check if the user exists in the database
+        const user = await DBManager.findByEmail(email);
 
+        if (!user) {
+            return res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+        }
+
+        // Create an instance of the User class
+        const userInstance = new User();
+        userInstance.pswHash = user.password; // Assuming your hashed password is stored in the 'password' field
+
+        // Check if the password matches
+        const isPasswordValid = await userInstance.verifyPassword(password);
+
+        if (isPasswordValid) {
+            // Password is correct, create a session or token for the user
+            // For example, you might use JWT (JSON Web Tokens) for session management
+            const token = createTokenForUser(user);
+
+            // Send the token as a response
+            return res.status(HTTPCodes.SuccesfullRespons.Ok).json({ token }).end();
+        } else {
+            // Password is incorrect
+            return res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).send("Incorrect email or password").end();
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(HTTPCodes.ServerSideErrorRespons.InternalServerError).send("Internal server error").end();
+    }
 });
+
+
+USER_API.post('/login', async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
+        console.log('Login attempt:', { email, password });
+    if (email && password) {
+        // Check if the user exists in the database
+        let user = await DBManager.findByEmail(email);
+
+        if (user) {
+            // Create an instance of the User class
+            const userInstance = new User();
+            userInstance.pswHash = user.password; // Assuming your hashed password is stored in the 'password' field
+
+            // Check if the password matches
+            if (await userInstance.verifyPassword(password)) {
+                // Password is correct, create a session or token for the user
+                // For example, you might use JWT (JSON Web Tokens) for session management
+                const token = createTokenForUser(user);
+
+                // Send the token as a response
+                res.status(HTTPCodes.SuccesfullRespons.Ok).json({ token }).end();
+            } else {
+                // Password is incorrect
+                res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).send("Incorrect email or password").end();
+            }
+        } else {
+            // User not found
+            res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+        }
+    } else {
+        // Missing email or password in the request body
+        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Email and password are required").end();
+    }
+        } catch (error) {
+        console.error('Error:', error);
+    }
+});
+
+
 
 USER_API.post('/:id', (req, res, next) => {
     /// TODO: Edit user

@@ -1,4 +1,4 @@
- import pg from "pg"
+import pg from "pg"
 
 
 // We are using an enviorment variable to get the db credentials 
@@ -104,6 +104,17 @@ class DBManager {
             client.end();
         }
     }
+    async findByEmail(email) {
+        const client = new pg.Client(this.#credentials);
+        try {
+            await client.connect();
+          const query = 'SELECT * FROM "public"."Users" WHERE email = $1';
+          const result = await client.query(query, [email]);
+          return result.rows[0]; // Assuming email is unique, return the first matching user
+        } catch (error) {
+          throw error;
+        }
+      }
 
 }
 
