@@ -37,38 +37,37 @@
         // Function to handle user login
         function handleLoginUser() {
             const user = {
-    email: document.getElementById("email").value,
-    password: document.getElementById("password").value
-};
+                email: document.getElementById("loginEmail").value,
+                password: document.getElementById("loginPassword").value
+            };
 
-
-    fetch('http://localhost:3000/user/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user),
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Handle the response data
-            console.log(data);
-            if (data.success) {
-                window.location.href = '/dashboard';
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            // Handle non-JSON responses or other errors
-        });
-}
+            fetch('/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Handle the response data
+                    console.log(data);
+                    if (data.success) {
+                        window.location.href = '/dashboard';
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Handle non-JSON responses or other errors
+                });
+        }
 
 
 
@@ -88,7 +87,6 @@
 
     <section>
         <h2>PLAY!</h2>
-        <p>.</p>
         <div id="game">
             <div id="user-choice">
                 <h3>Your Choice</h3>
@@ -154,7 +152,7 @@
                 </form>
             </div>
         </div>
-        
+
 
         <div id="settingsModal" class="modal">
             <div class="modal-content">

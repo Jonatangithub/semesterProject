@@ -10,7 +10,6 @@ function createTokenForUser(user) {
     const tokenPayload = {
         userId: user.id,
         email: user.email,
-        expiresIn: Math.floor(Date.now() / 1000) + 60 * 60, // Expires in 1 hour
     };
 
     // Create a JSON string of the payload
@@ -80,11 +79,9 @@ USER_API.post('/register', async (req, res, next) => {
 });
 USER_API.post('/login', async (req, res, next) => {
     const { email, password } = req.body;
-
     if (email && password) {
         // Check if the user exists in the database
         let user = await DBManager.findByEmail(email);
-
         if (user) {
             // Compare the provided password with the hashed password from the database
             const isPasswordValid = await bcrypt.compare(password, user.password);
