@@ -55,20 +55,53 @@
                     return response.json();
                 })
                 .then(data => {
-                    // Handle the response data
                     console.log(data);
-                    if (data.success) {
-                        window.location.href = '/dashboard';
+                    if (data.token) {
+                        // Store user information in session or local storage
+                        sessionStorage.setItem('userToken', data.token);
+                        // Optionally, you can store other user details like name, email, etc.
+
+                        // Call the function to update User Info Modal
+                        getUserInfoModal();
+
+                        // Show the dashboard section
+                        document.getElementById('dashboard').style.display = 'block';
                     } else {
                         alert(data.message);
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    // Handle non-JSON responses or other errors
                 });
         }
+        function getUserInfoModal() {
+            const userToken = sessionStorage.getItem('token');
+            if (!userToken) {
+                // User not logged in
+                return;
+            }
 
+            fetch('/user', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${userToken}`,
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(userData => {
+                    // Update User Info Modal content with userData
+                    const userInfoModalContent = document.getElementById('userInfoModal').getElementsByClassName('modal-content')[0];
+                    userInfoModalContent.innerHTML = `<p>User Name: ${userData.name}</p><p>Email: ${userData.email}</p>`;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
 
 
     </script>
@@ -80,11 +113,19 @@
             <a href="#login" data-modal="loginModal">Login</a>
             <a href="#leaderboard" data-modal="leaderboardModal">Leaderboard</a>
             <a href="#settings" data-modal="settingsModal">Settings</a>
+            <a href="#userInfo" data-modal="userInfoModal">User</a>
+
 
 
         </div>
     </header>
-
+    <section id="dashboard" style="display:none;">
+        <h2>You are now logged in!</h2>
+        <div id="dashboard-content">
+            <!-- Add your dashboard content here -->
+            <p>Your game statistics will now be recorded.</p>
+        </div>
+    </section>
     <section>
         <h2>PLAY!</h2>
         <div id="game">
@@ -160,6 +201,12 @@
                 <h3>These are the settings</h3>
                 <label for="darkModeCheckbox">Dark Mode</label>
                 <input type="checkbox" id="darkModeCheckbox">
+            </div>
+        </div>
+        <div id="userInfoModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p>This is the User Information.</p>
             </div>
         </div>
     </section>

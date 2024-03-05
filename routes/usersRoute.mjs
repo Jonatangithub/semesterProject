@@ -19,20 +19,42 @@ function createTokenForUser(user) {
     const base64EncodedPayload = Buffer.from(payloadString).toString('base64');
 
     // Create a signature using HMAC-SHA256 and encode it with Base64
-    const signature = crypto.createHmac('sha256', 'your-secret-key').update(base64EncodedPayload).digest('base64');
+    const signature = crypto.createHmac('sha256', 'token').update(base64EncodedPayload).digest('base64');
 
     // Combine the encoded payload and signature to create the token
     const token = `${base64EncodedPayload}.${signature}`;
 
     return token;
 }
+function decodeToken(token) {
+    try {
+        // Split the token into payload and signature
+        const [payloadBase64, signatureBase64] = token.split('.');
 
+        // Decode the payload
+        const payloadBuffer = Buffer.from(payloadBase64, 'base64');
+        const payload = JSON.parse(payloadBuffer.toString());
+
+        // Verify the signature
+        const signatureBuffer = Buffer.from(signatureBase64, 'base64');
+        const expectedSignature = crypto.createHmac('sha256', 'token').update(payloadBase64).digest('base64');
+
+        if (crypto.timingSafeEqual(signatureBuffer, Buffer.from(expectedSignature))) {
+            return payload;
+        } else {
+            throw new Error('Invalid signature');
+        }
+    } catch (error) {
+        console.error('Error decoding token:', error);
+        throw error;
+    }
+}
 
 const USER_API = express.Router();
-USER_API.use(express.json()); // This makes it so that express parses all incoming payloads as JSON for this route.
+USER_API.use(express.json());
 
 USER_API.get('/', async (req, res) => {
-    console.log("here")
+    console.log("here");
     const user = new User();
     const users = await user.getUsers();
     res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(users)).end();
@@ -105,6 +127,32 @@ USER_API.post('/login', async (req, res, next) => {
         res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Email and password are required").end();
     }
 });
+
+USER_API.get('/user', async (req, res) => {
+    const userToken = req.headers.authorization;
+    
+    // Check if the token is present
+    if (!userToken) {
+        return res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).send("Unauthorized").end();
+    }
+
+    try {
+        // Decode the token and get the user information
+        const decodedToken = decodeToken(userToken);
+        const userId = decodedToken.userId;
+
+        // Fetch user information from the database based on the userId
+        const user = await DBManager.getUserById(userId);
+
+        // Send the user information in the response
+        res.status(HTTPCodes.SuccesfullRespons.Ok).json(user).end();
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(HTTPCodes.ServerSideErrorRespons.InternalServerError).send("Internal server error").end();
+    }
+});
+
+
 
 
 
