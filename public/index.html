@@ -13,7 +13,6 @@
     <script src="game.mjs"></script>
     <script type="module" src="settings.mjs"></script>
     <script>
-        // Function to handle button click event
         function handleCreateUser() {
             const user = {
                 name: document.getElementById("name").value,
@@ -34,7 +33,6 @@
                     return response.json(); // assuming the response is JSON
                 })
         }
-        // Function to handle user login
         function handleLoginUser() {
             const user = {
                 email: document.getElementById("loginEmail").value,
@@ -102,8 +100,6 @@
                     console.error('Error:', error);
                 });
         }
-
-
     </script>
     <header>
         <div id="menu-button">&#9776;</div>
@@ -111,18 +107,13 @@
         <div id="options">
             <a href="#register" data-modal="registerModal">Register</a>
             <a href="#login" data-modal="loginModal">Login</a>
-            <a href="#leaderboard" data-modal="leaderboardModal">Leaderboard</a>
             <a href="#settings" data-modal="settingsModal">Settings</a>
             <a href="#userInfo" data-modal="userInfoModal">User</a>
-
-
-
         </div>
     </header>
     <section id="dashboard" style="display:none;">
         <h2>You are now logged in!</h2>
         <div id="dashboard-content">
-            <!-- Add your dashboard content here -->
             <p>Your game statistics will now be recorded.</p>
         </div>
     </section>
@@ -142,7 +133,6 @@
                 <button onclick="makeChoice('gun')">Gun</button>
                 <p id="user-choice-text"></p>
             </div>
-
             <div id="computer-choice">
                 <h3>Computer's Choice</h3>
                 <p id="computer-choice-text"></p>
@@ -152,14 +142,6 @@
                 <p id="result-text">Make your choice to start the game!</p>
             </div>
         </div>
-
-        <div id="leaderboardModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <p>This is the Leaderboard.</p>
-            </div>
-        </div>
-
         <div id="registerModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
@@ -193,8 +175,6 @@
                 </form>
             </div>
         </div>
-
-
         <div id="settingsModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
@@ -210,7 +190,6 @@
             </div>
         </div>
     </section>
-
     <footer>
         <p>&copy; 2024 Rock Paper Scissors 2. All rights reserved.</p>
     </footer>
