@@ -19,7 +19,6 @@ class DBManager {
         };
 
     }
-
     async updateUser(user) {
 
         const client = new pg.Client(this.#credentials);
@@ -42,7 +41,6 @@ class DBManager {
         return user;
 
     }
-
     async deleteUser(user) {
 
         const client = new pg.Client(this.#credentials);
@@ -64,7 +62,6 @@ class DBManager {
 
         return user;
     }
-
     async createUser(user) {
 
         const client = new pg.Client(this.#credentials);
@@ -114,8 +111,50 @@ class DBManager {
         } catch (error) {
           throw error;
         }
-      }
-
+    }
+    async updateStats(userId, statChange) {
+        const client = new pg.Client(this.#credentials);
+    
+        try {
+            await client.connect();
+    
+            // Fetch existing stats
+            const existingStats = await this.getStats(userId);
+    
+            // Update stats based ondb
+            existingStats.wins += (statChange === 1) ? 1 : 0;
+            existingStats.draws += (statChange === 0) ? 1 : 0;
+            existingStats.losses += (statChange === 2) ? 1 : 0;
+    
+            // Save the updated stats back to the database
+            await client.query('UPDATE "public"."Stats" SET "wins" = $1, "draws" = $2, "losses" = $3 WHERE "userId" = $4;', [
+                existingStats.wins,
+                existingStats.draws,
+                existingStats.losses,
+                userId
+            ]);
+    
+            // Return success message or any relevant data
+            return { success: true, message: 'Stats updated successfully' };
+        } catch (error) {
+            console.error('Error updating stats:', error);
+            throw error;
+        } finally {
+            client.end();
+        }
+    }    
+    async getStats(userId) {
+        const client = new pg.Client(this.#credentials);
+    
+        try {
+            await client.connect();
+            const result = await client.query('SELECT * FROM "public"."Stats" WHERE "userId" = $1;', [userId]);
+            return result.rows[0];
+        } catch (error) {
+        } finally {
+            client.end();
+        }
+    }
 }
 
 

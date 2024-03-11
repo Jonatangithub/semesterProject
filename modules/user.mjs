@@ -1,3 +1,5 @@
+import DBManager from "./storageManager.mjs"
+import bcrypt from 'bcrypt';
 
 class User {
 
@@ -48,25 +50,42 @@ async verifyPassword(password) {
       throw error;
   }
 }
-
-  async save() {
-    try {
-      if (this.id) {
-        const updateResult = await DBManager.updateUser(this);
-        return updateResult.rowCount > 0;
-      } else {
-        // Hash the password before saving
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(this.pswHash, saltRounds);
-        this.pswHash = hashedPassword;
-        
-        await DBManager.createUser(this);
+async save() {
+  try {
+    console.log('Saving user with ID:', this.id);
+    if (this.id) {
+      if (!this.token) {
+        throw new Error('Token is required for authentication.');
       }
-    } catch (error) {
-      throw error;
+
+      // Assuming you have a method to verify the token
+      const isTokenValid = verifyToken(this.token);
+      if (!isTokenValid) {
+        throw new Error('Invalid token. Authentication failed.');
+      }
+
+      const updateResult = await DBManager.updateUser(this);
+      return updateResult.rowCount > 0;
+    } else {
+      console.log("shit not workin fam")
+      // Hash the password before saving
+      const saltRounds = 10;
+      // Logging to check the value of this.pswHash
+      console.log('Original password:', this.pswHash);
+
+      // Assuming the original password is stored in this.pswHash
+      this.pswHash = await bcrypt.hash(this.pswHash, saltRounds);
+
+      // Logging to check the hashed password
+      console.log('Hashed password:', this.pswHash);
+
+      await DBManager.createUser(this);
     }
+  } catch (error) {
+    throw error;
   }
-  
+}
+
 
   async delete() {
     /// TODO: What happens if the DBManager fails to complete its task?
@@ -78,6 +97,34 @@ async verifyPassword(password) {
       throw error;
     }
   }
+async updateStats(wins, draws, losses) {
+  try {
+      await DBManager.updateStats(this.id, wins, draws, losses);
+  } catch (error) {
+      // TODO: Handle error
+  }
+}
+
+async getStats() {
+  try {
+      return await DBManager.getStats(this.id);
+  } catch (error) {
+      // TODO: Handle error
+  }
+}
+
+async trackGameResult(result) {
+  const stats = await this.getStats();
+
+  if (result.includes("win")) {
+      await this.updateStats(stats.wins + 1, stats.draws, stats.losses);
+  } else if (result.includes("draw")) {
+      await this.updateStats(stats.wins, stats.draws + 1, stats.losses);
+  } else {
+      await this.updateStats(stats.wins, stats.draws, stats.losses + 1);
+  }
+}
+
 }
 
 export default User;
