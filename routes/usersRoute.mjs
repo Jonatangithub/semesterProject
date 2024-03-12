@@ -163,31 +163,37 @@ USER_API.delete('/:id', (req, res) => {
     const user = new User(); //TODO: Actual user
     user.delete();
 });
-
 USER_API.post('/updateStats', async (req, res) => {
     const userToken = req.headers.authorization;
-
 
     if (!userToken) {
         return res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).send("Unauthorized").end();
     }
 
     try {
+        // Assuming decodeToken correctly extracts the userId from the token
         const decodedToken = decodeToken(userToken);
         const userId = decodedToken.userId;
-
         const { statChange } = req.body;
 
-        // Perform the necessary logic to update stats in your database
-        // For example, assuming you have a method like updateUserStats in your storageManager.mjs
-        await DBManager.updateStats(userId, statChange);
+        // Here you should add logic to determine wins, draws, and losses based on statChange
+        let wins = 0, draws = 0, losses = 0;
+        switch(statChange) {
+            case 1: wins = 1; break; // Win
+            case 0: draws = 1; break; // Draw
+            case -1: losses = 1; break; // Loss
+            default: // Handle unexpected statChange value
+        }
 
-        return res.status(HTTPCodes.SuccesfullRespons.Ok).send("Stats updated successfully").end();
+        await DBManager.updateStats(userId, wins, draws, losses);
+
+        res.status(HTTPCodes.SuccesfullRespons.Ok).send("Stats updated successfully").end();
     } catch (error) {
         console.error('Error updating stats:', error);
-        return res.status(HTTPCodes.ServerSideErrorRespons.InternalServerError).send("Internal server error").end();
+        res.status(HTTPCodes.ServerSideErrorRespons.InternalServerError).send("Internal server error").end();
     }
 });
+
 
 
 export default USER_API

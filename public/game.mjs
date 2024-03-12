@@ -33,52 +33,50 @@ async function checkAuth(req, res, next) {
     }
   }
   
-  async function makeChoice(userChoice) {
-    const userToken = sessionStorage.getItem('userToken');
+// Updated makeChoice function in game.mjs
+function makeChoice(userChoice) {
+  const userToken = sessionStorage.getItem('userToken');
 
-    if (!userToken) {
-        alert('User not logged in');
-        return;
-    }
+  if (!userToken) {
+      alert('User not logged in');
+      return;
+  }
 
-    const choices = ["rock", "paper", "scissors", "sponge", "water", "fire", "air", "gun", "human"];
-    console.log(`User chose: ${userChoice}`);
+  const choices = ["rock", "paper", "scissors", "sponge", "water", "fire", "air", "gun", "human"];
+  console.log(`User chose: ${userChoice}`);
 
-    const computerChoice = choices[Math.floor(Math.random() * 9)];
+  const computerChoice = choices[Math.floor(Math.random() * 9)];
 
-    document.getElementById('user-choice-text').innerText = `You chose ${userChoice}.`;
-    document.getElementById('computer-choice-text').innerText = `Computer chose ${computerChoice}.`;
+  document.getElementById('user-choice-text').innerText = `You chose ${userChoice}.`;
+  document.getElementById('computer-choice-text').innerText = `Computer chose ${computerChoice}.`;
 
-    const result = getResult(userChoice, computerChoice);
-    document.getElementById('result-text').innerText = result;
+  const result = getResult(userChoice, computerChoice);
 
+  // Here we assume 'statChange' is a key in the result object returned by getResult indicating win (1), draw (0), or loss (-1)
+/*   try {
+      const response = await fetch('/user/updateStats', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${userToken}`,
+          },
+          body: JSON.stringify({
+              statChange: result.statChange, // Assuming getResult returns an object with a 'statChange' property
+          }),
+      });
 
-    try {
-        const response = await fetch('user/updateStats', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${userToken}`,
-            },
-            body: JSON.stringify({
-                statChange: result.statChange, // Use the statChange value from the game result
-            }),
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            console.log(result);
-            console.log(statChange);
-        } else {
-            console.error('Failed to update stats:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error updating stats:', error);
-    }
+      if (response.ok) {
+          const updateResult = await response.json();
+          console.log('Stats updated successfully:', updateResult);
+      } else {
+          console.error('Failed to update stats:', response.statusText);
+      }
+  } catch (error) {
+      console.error('Error updating stats:', error);
+  }
+} */
 }
-
-
-
+let statChange = 0;
 async function getResult(user, computer) {
   const outcomes = {
       rock: { beats: ['scissors', 'sponge', 'fire', 'human'], losesTo: ['paper', 'water', 'air', 'gun'] },
@@ -92,16 +90,23 @@ async function getResult(user, computer) {
       human: { beats: ['sponge', 'paper', 'water', 'air'], losesTo: ['fire', 'scissors', 'rock', 'gun'] }
   };
 
-  let statChange;
-
+  let resultText = "make a choice"; 
   if (user === computer) {
       statChange = 0; // It's a tie
-      return { statChange, resultText: "It's a tie!" };
+      console.log( statChange, "tie")
+      resultText =  "It's a tie!"
+      return { statChange};
   } else if (outcomes[user].beats.includes(computer)) {
       statChange = 1; // You win
-      return { statChange, resultText: `You win! ${user} beats ${computer}.` };
+      console.log( statChange, "victory")
+      resultText = `You win! ${user} beats ${computer}.`
+      document.getElementById('result-text').innerText = resultText;
+      return { statChange};
   } else {
       statChange = -1; // You lose
-      return { statChange, resultText: `You lose! ${computer} beats ${user}.` };
+      console.log( statChange, "loss")
+      resultText =  `You lose! ${computer} beats ${user}.` 
+      document.getElementById('result-text').innerText = resultText;
+      return { statChange};
   }
 }
