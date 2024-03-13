@@ -95,18 +95,18 @@ async function getResult(user, computer) {
       statChange = 0; // It's a tie
       console.log( statChange, "tie")
       resultText =  "It's a tie!"
-      return { statChange};
+      return {statChange};
   } else if (outcomes[user].beats.includes(computer)) {
       statChange = 1; // You win
       console.log( statChange, "victory")
       resultText = `You win! ${user} beats ${computer}.`
       document.getElementById('result-text').innerText = resultText;
-      return { statChange};
+      return {statChange};
   } else {
       statChange = -1; // You lose
       console.log( statChange, "loss")
       resultText =  `You lose! ${computer} beats ${user}.` 
       document.getElementById('result-text').innerText = resultText;
-      return { statChange};
+      return {statChange};
   }
 }

@@ -1,5 +1,4 @@
 
-
 function handleCreateUser() {
     const user = {
         name: document.getElementById("name").value,

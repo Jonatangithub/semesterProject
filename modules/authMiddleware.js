@@ -1,5 +1,5 @@
 
-export function checkAuth(req, res, next) {
+function checkAuth(req, res, next) {
     const userToken = sessionStorage.getItem('userToken');
   
     if (!userToken) {

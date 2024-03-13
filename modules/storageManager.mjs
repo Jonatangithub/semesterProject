@@ -101,6 +101,7 @@ class DBManager {
             client.end();
         }
     }
+
     async findByEmail(email) {
         const client = new pg.Client(this.#credentials);
         try {
@@ -112,6 +113,43 @@ class DBManager {
           throw error;
         }
     }
+
+    async createStats(userId, wins, losses, draws) {
+        const client = new pg.Client(this.#credentials);
+        let createdStats;
+    
+        try {
+            await client.connect();
+            const output = await client.query('INSERT INTO "public"."stats"("userid", "wins", "losses", "draws") VALUES($1::Int, $2::Int, $3::Int, $4::Int) RETURNING "userid", "wins", "losses", "draws";', [userId, wins, losses, draws]);
+    
+            if (output.rows.length == 1) {
+                createdStats = output.rows[0];
+            } else {
+                throw new Error("Failed to insert stats record.");
+            }
+        } catch (error) {
+            console.error("Error in createStats:", error);
+            throw error;
+        } finally {
+            await client.end();
+        }
+        return createdStats;
+    }
+    
+    
+async getStatsByUserId(userId) {
+    const queryText = 'SELECT FROM stats WHERE userid = $1';
+    const values = [userId];
+    try {
+        const { rows } = await client.query(queryText, values);
+        return rows; // This returns an array of pets associated with the userId
+    } catch (err) {
+        console.error('Error retrieving pets by user ID:', err);
+        throw err;
+    }
+  }
+}
+
   /*   async updateStats(userId, wins, draws, losses) {
         const client = new pg.Client(this.#credentials);
     
@@ -125,9 +163,8 @@ class DBManager {
             throw error;
         } finally {
             client.end();
-        } */
-    }  
-/*     async getStats(userId) {
+        }
+     async getStats(userId) {
         const client = new pg.Client(this.#credentials);
     
         try {

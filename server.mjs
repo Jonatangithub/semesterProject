@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import express from 'express' // Express is installed using npm
-import USER_API from './routes/usersRoute.mjs'; // This is where we have defined the API for working with users
+import USER_API from './routes/usersRoute.mjs';
+import STATS_API from './routes/statsRoute.mjs';
 import superLogger from './modules/superLogger.mjs';
 import printDeveloperStartupInportantInformationMSG from "./modules/developerHelpers.mjs";
 
@@ -24,7 +25,7 @@ server.use(express.static('public'));
 
 // Telling the server to use the USER_API (all urls that uses this code will have to have the /user after the base address)
 server.use("/user", USER_API);
-
+server.use('/stats', STATS_API);
 // A get request handler example)
 server.get("/", (req, res, next) => {
     res.status(200).send(JSON.stringify({ msg: "These are not the droids...." })).end();

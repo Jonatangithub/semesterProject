@@ -2201,3 +2201,182 @@ Database connection  undefined
 12:22:18 PM [32mGET[39m /game.mjs
 12:22:18 PM [32mGET[39m /settings.mjs
 12:22:18 PM [32mGET[39m /misc.mjs
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+12:29:58 PM [32mGET[39m /
+12:29:58 PM [32mGET[39m /styles.css
+12:29:58 PM [32mGET[39m /menu.mjs
+12:29:58 PM [32mGET[39m /game.mjs
+12:29:58 PM [32mGET[39m /settings.mjs
+12:29:58 PM [32mGET[39m /misc.mjs
+12:33:34 PM [32mGET[39m /
+12:33:34 PM [32mGET[39m /styles.css
+12:33:34 PM [32mGET[39m /menu.mjs
+12:33:34 PM [32mGET[39m /game.mjs
+12:33:34 PM [32mGET[39m /settings.mjs
+12:33:34 PM [32mGET[39m /misc.mjs
+1:13:03 PM [32mGET[39m /styles.css
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+1:21:55 PM [33mPOST[39m /user/login
+1:21:55 PM [33mPOST[39m /user/login
+1:22:06 PM [33mPOST[39m /user/login
+####################
+Server enviorment undefined
+####################
+Database connection  undefined
+1:45:48 PM [32mGET[39m /
+1:45:48 PM [32mGET[39m /styles.css
+1:45:48 PM [32mGET[39m /menu.mjs
+1:45:48 PM [32mGET[39m /game.mjs
+1:45:48 PM [32mGET[39m /settings.mjs
+1:45:48 PM [32mGET[39m /misc.mjs
+1:45:51 PM [32mGET[39m /styles.css
+1:46:00 PM [33mPOST[39m /user/login
+2:05:45 PM [32mGET[39m /
+2:05:45 PM [32mGET[39m /styles.css
+2:05:45 PM [32mGET[39m /menu.mjs
+2:05:45 PM [32mGET[39m /game.mjs
+2:05:45 PM [32mGET[39m /settings.mjs
+2:05:45 PM [32mGET[39m /misc.mjs
+Server enviorment undefined
+Database connection  undefined
+####################
+####################
+11:57:53 AM [32mGET[39m /
+11:57:53 AM [32mGET[39m /menu.mjs
+11:57:53 AM [32mGET[39m /settings.mjs
+11:57:53 AM [32mGET[39m /game.mjs
+11:57:53 AM [32mGET[39m /styles.css
+11:57:53 AM [32mGET[39m /misc.mjs
+11:58:01 AM [33mPOST[39m /user/login
+12:05:51 PM [33mPOST[39m /registerstat
+12:06:02 PM [33mPOST[39m /registerStats
+####################
+Server enviorment undefined
+####################
+Database connection  undefined
+12:08:54 PM [32mGET[39m /user
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+####################
+Server enviorment undefined
+####################
+Database connection  undefined
+####################
+Server enviorment undefined
+####################
+Database connection  undefined
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+####################
+Database connection  undefined
+Server enviorment undefined
+####################
+####################
+Server enviorment undefined
+####################
+Database connection  undefined
+12:24:47 PM [32mGET[39m /user
+12:24:56 PM [33mPOST[39m /user/register
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+####################
+Server enviorment undefined
+####################
+Database connection  undefined
+12:49:06 PM [33mPOST[39m /stats/registerStats
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+12:52:14 PM [33mPOST[39m /stats/registerStats
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+12:53:20 PM [33mPOST[39m /stats/registerStats
+####################
+Database connection  undefined
+Server enviorment undefined
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+####################
+12:59:47 PM [33mPOST[39m /stats/registerStats
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+1:06:12 PM [33mPOST[39m /stats/registerStats
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+1:07:50 PM [33mPOST[39m /stats/registerStats
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+1:09:39 PM [33mPOST[39m /stats/registerStats
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+1:10:20 PM [33mPOST[39m /stats/registerStats
+####################
+Server enviorment undefined
+####################
+Database connection  undefined
+1:11:05 PM [33mPOST[39m /stats/registerStats
+1:11:06 PM [33mPOST[39m /stats/registerStats
+1:11:07 PM [33mPOST[39m /stats/registerStats
+1:11:23 PM [33mPOST[39m /stats/registerStats
+1:11:25 PM [33mPOST[39m /stats/registerStats
+Server enviorment undefined
+####################
+Database connection  undefined
+####################
+1:11:56 PM [33mPOST[39m /stats/registerStats
+####################
+Server enviorment undefined
+####################
+Database connection  undefined
+1:12:33 PM [33mPOST[39m /stats/registerStats
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+1:15:31 PM [33mPOST[39m /stats/registerStats
+1:15:34 PM [33mPOST[39m /stats/registerStats
