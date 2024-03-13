@@ -11,31 +11,17 @@ function createTokenForUser(user) {
         userId: user.id,
         email: user.email,
     };
-
-    // Create a JSON string of the payload
     const payloadString = JSON.stringify(tokenPayload);
-
-    // Encode the payload with Base64
     const base64EncodedPayload = Buffer.from(payloadString).toString('base64');
-
-    // Create a signature using HMAC-SHA256 and encode it with Base64
     const signature = crypto.createHmac('sha256', 'token').update(base64EncodedPayload).digest('base64');
-
-    // Combine the encoded payload and signature to create the token
     const token = `${base64EncodedPayload}.${signature}`;
-
     return token;
 }
 function decodeToken(token) {
     try {
-        // Split the token into payload and signature
         const [payloadBase64, signatureBase64] = token.split('.');
-
-        // Decode the payload
         const payloadBuffer = Buffer.from(payloadBase64, 'base64');
         const payload = JSON.parse(payloadBuffer.toString());
-
-        // Verify the signature
         const signatureBuffer = Buffer.from(signatureBase64, 'base64');
         const expectedSignature = crypto.createHmac('sha256', 'token').update(payloadBase64).digest('base64');
 
@@ -49,10 +35,8 @@ function decodeToken(token) {
         throw error;
     }
 }
-
 const USER_API = express.Router();
 USER_API.use(express.json());
-
 USER_API.get('/', async (req, res) => {
     console.log("here");
     const user = new User();
@@ -60,37 +44,34 @@ USER_API.get('/', async (req, res) => {
     res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(users)).end();
 });
 
-
 USER_API.get('/:id', (req, res, next) => {
-
-    // Tip: All the information you need to get the id part of the request can be found in the documentation 
-    // https://expressjs.com/en/guide/routing.html (Route parameters)
-
-    /// TODO: 
-    // Return user object
 })
 
-// your registration endpoint
-
+//REGISTER!!
 USER_API.post('/register', async (req, res, next) => {
     const { name, email, password } = req.body;
-
     if (name && email && password) {
         try {
-            // Check if the email is already in use
             const emailTaken = await User.isEmailTaken(email);
             if (emailTaken) {
                 return res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Email is already in use").end();
             }
-
-            // Create a new user and save it to the database
             const user = new User();
             user.name = name;
             user.email = email;
-            user.pswHash = password; // TODO: Hash the password properly
+            user.pswHash = password; // Ensure password hashing is done inside User's save method
             await user.save();
 
-            res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(user)).end();
+            // After successful user creation, create initial stats for the user
+            // Assuming `user.id` is now populated and `DBManager.createStats` method exists
+            // Initialize stats with zeros or any default values you see fit
+            const initialStats = await DBManager.createStats(user.id, 0, 0, 0);
+            if (!initialStats) {
+                throw new Error("Failed to create initial stats for user");
+            }
+
+            // Return the newly created user (Consider excluding sensitive information like passwords)
+            res.status(HTTPCodes.SuccesfullRespons.Ok).json({ user: user, stats: initialStats }).end();
         } catch (error) {
             console.error(error);
             res.status(HTTPCodes.ServerSideErrorRespons.InternalServerError).send("Internal server error").end();
@@ -99,6 +80,7 @@ USER_API.post('/register', async (req, res, next) => {
         res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Missing required fields").end();
     }
 });
+
 USER_API.post('/login', async (req, res, next) => {
     const { email, password } = req.body;
     if (email && password) {
@@ -109,11 +91,12 @@ USER_API.post('/login', async (req, res, next) => {
             const isPasswordValid = await bcrypt.compare(password, user.password);
 
             if (isPasswordValid) {
-                // Password is correct, generate a token
                 const token = createTokenForUser(user);
+                const userId = user.id
+                console.log(userId)
 
                 // Send the token as a response
-                res.status(HTTPCodes.SuccesfullRespons.Ok).json({ token }).end();
+                res.status(HTTPCodes.SuccesfullRespons.Ok).json({ token, userId }).end();
             } else {
                 // Password is incorrect
                 res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).send("Incorrect email or password").end();
@@ -130,7 +113,7 @@ USER_API.post('/login', async (req, res, next) => {
 
 USER_API.get('/user', async (req, res) => {
     const userToken = req.headers.authorization;
-    
+
     // Check if the token is present
     if (!userToken) {
         return res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).send("Unauthorized").end();
@@ -163,37 +146,6 @@ USER_API.delete('/:id', (req, res) => {
     const user = new User(); //TODO: Actual user
     user.delete();
 });
-USER_API.post('/updateStats', async (req, res) => {
-    const userToken = req.headers.authorization;
-
-    if (!userToken) {
-        return res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).send("Unauthorized").end();
-    }
-
-    try {
-        // Assuming decodeToken correctly extracts the userId from the token
-        const decodedToken = decodeToken(userToken);
-        const userId = decodedToken.userId;
-        const { statChange } = req.body;
-
-        // Here you should add logic to determine wins, draws, and losses based on statChange
-        let wins = 0, draws = 0, losses = 0;
-        switch(statChange) {
-            case 1: wins = 1; break; // Win
-            case 0: draws = 1; break; // Draw
-            case -1: losses = 1; break; // Loss
-            default: // Handle unexpected statChange value
-        }
-
-        await DBManager.updateStats(userId, wins, draws, losses);
-
-        res.status(HTTPCodes.SuccesfullRespons.Ok).send("Stats updated successfully").end();
-    } catch (error) {
-        console.error('Error updating stats:', error);
-        res.status(HTTPCodes.ServerSideErrorRespons.InternalServerError).send("Internal server error").end();
-    }
-});
-
 
 
 export default USER_API

@@ -4,3 +4,9 @@ CREATE TABLE "Users" (
     name text,
     password text
 );
+CREATE TABLE Stats (
+    userId INT REFERENCES "Users"(id),
+    wins INT,
+    losses INT,
+    draws INT
+);

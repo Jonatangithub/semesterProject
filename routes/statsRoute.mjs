@@ -6,12 +6,12 @@ STATS_API.use(express.json());
 
 STATS_API.post('/registerStats', async (req, res) => {
     try {
-        const { userId, wins, losses, draws } = req.body;
-        const newStat = await DBManager.createStats(userId, wins, losses, draws);
+        const { userid, wins, losses, draws } = req.body;
+        const newStat = await DBManager.createStats(userid, wins, losses, draws);
         if (newStat) {
             console.log(newStat)
             const formattedResponse = {
-                userId: newStat.userid,
+                userid: newStat.userid,
                 stats: {
                     wins: newStat.wins,
                     losses: newStat.losses,
@@ -29,20 +29,41 @@ STATS_API.post('/registerStats', async (req, res) => {
 });
 
 
-STATS_API.get('/user-stats', async (req, res) => { // Using authMiddleware to ensure only authenticated users can access this endpoint
-    const userId = req.userId; // Use the authenticated user's ID to fetch pets
+STATS_API.put('/updateStats', async (req, res) => {
+    const { userid, result } = req.body;
+
+    if (!userid || !result) {
+        return res.status(400).send("Missing userid or result");
+    }
 
     try {
-        const stats = await DBManager.getStatsByUserId(userId);
-        if (stats.length > 0) {
-            res.status(HTTPCodes.Successful.Ok).json(stats); // Send back the array of pets associated with the authenticated user
-        } else {
-            res.status(HTTPCodes.ClientError.NotFound).send("No stats found for the user");
+        const currentStats = await DBManager.getStatsByuserid(userid);
+        console.log(currentStats)
+        if (!currentStats || currentStats.length === 0) {
+            return res.status(404).send("Stats not found for the user");
         }
+
+        if (result === 'win') {
+            currentStats.wins += 1;
+        } else if (result === 'loss') {
+            currentStats.losses += 1;
+        } else if (result === 'draw') {
+            currentStats.draws += 1;
+        } else {
+            // If the result is not recognized
+            return res.status(400).send("Invalid result value");
+        }
+
+        // Now, update the stats in the database
+        await DBManager.updateStats(userid, currentStats.wins, currentStats.losses, currentStats.draws);
+
+        // Send back the updated stats as a response
+        res.status(200).json(currentStats);
     } catch (error) {
-        console.error("Error fetching stats:", error);
-        res.status(HTTPCodes.ServerError.InternalServerError).send("Failed to fetch stats due to server error");
+        console.error("Database error:", error);
+        res.status(500).send("Failed to update stats due to server error");
     }
 });
+
 
 export default STATS_API;

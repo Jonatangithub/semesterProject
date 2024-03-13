@@ -101,27 +101,14 @@ class DBManager {
             client.end();
         }
     }
-
-    async findByEmail(email) {
-        const client = new pg.Client(this.#credentials);
-        try {
-            await client.connect();
-          const query = 'SELECT * FROM "public"."Users" WHERE email = $1';
-          const result = await client.query(query, [email]);
-          return result.rows[0]; // Assuming email is unique, return the first matching user
-        } catch (error) {
-          throw error;
-        }
-    }
-
-    async createStats(userId, wins, losses, draws) {
+    async createStats(userid, wins, losses, draws) {
         const client = new pg.Client(this.#credentials);
         let createdStats;
-    
+
         try {
             await client.connect();
-            const output = await client.query('INSERT INTO "public"."stats"("userid", "wins", "losses", "draws") VALUES($1::Int, $2::Int, $3::Int, $4::Int) RETURNING "userid", "wins", "losses", "draws";', [userId, wins, losses, draws]);
-    
+            const output = await client.query('INSERT INTO "public"."stats"("userid", "wins", "losses", "draws") VALUES($1::Int, $2::Int, $3::Int, $4::Int) RETURNING "userid", "wins", "losses", "draws";', [userid, wins, losses, draws]);
+
             if (output.rows.length == 1) {
                 createdStats = output.rows[0];
             } else {
@@ -135,52 +122,50 @@ class DBManager {
         }
         return createdStats;
     }
-    
-    
-async getStatsByUserId(userId) {
-    const queryText = 'SELECT FROM stats WHERE userid = $1';
-    const values = [userId];
-    try {
-        const { rows } = await client.query(queryText, values);
-        return rows; // This returns an array of pets associated with the userId
-    } catch (err) {
-        console.error('Error retrieving pets by user ID:', err);
-        throw err;
-    }
-  }
-}
 
-  /*   async updateStats(userId, wins, draws, losses) {
+    async findByEmail(email) {
         const client = new pg.Client(this.#credentials);
-    
         try {
             await client.connect();
-            // Assuming there's a row in the Stats table for each user to track their wins, draws, and losses
-            await client.query('UPDATE "public"."Stats" SET wins = wins + $2, draws = draws + $3, losses = losses + $4 WHERE "userId" = $1',
-                [userId, wins, draws, losses]);
+            const query = 'SELECT * FROM "public"."Users" WHERE email = $1';
+            const result = await client.query(query, [email]);
+            return result.rows[0]; // Assuming email is unique, return the first matching user
         } catch (error) {
-            console.error('Error updating stats:', error);
             throw error;
-        } finally {
-            client.end();
-        }
-     async getStats(userId) {
-        const client = new pg.Client(this.#credentials);
-    
-        try {
-            await client.connect();
-            const result = await client.query('SELECT * FROM "public"."Stats" WHERE "userId" = $1;', [userId]);
-            return result.rows[0];
-        } catch (error) {
-        } finally {
-            client.end();
         }
     }
-} */
+    async getStatsByuserid(userid) {
+        const client = new pg.Client(this.#credentials);
+        try {
+            await client.connect();
+            const result = await client.query('Select * from "public"."stats"  where userid = $1;', [userid]);
+            return result.rows[0]; // Assuming email is unique, return the first matching user
+        } catch (error) {
+            throw error;
 
+        }
+    }
 
+    async updateStats(userid, wins, losses, draws) {
+        const client = new pg.Client(this.#credentials);
 
+        try {
+            await client.connect();
+            const output = await client.query('Update "public"."stats" set "wins" = $1, "losses" = $2, "draws" = $3 where userid = $4;', [wins, losses, draws, userid]);
 
+            if (output.rowCount === 0) {
+                throw new Error(`Stats for userid ${userid} not found.`);
+            }
+
+        } catch (error) {
+            console.error("Error updating stats:", error);
+            throw error; // It's generally a good idea to rethrow the error so the calling function can handle it
+        } finally {
+            await client.end(); // Always close the connection
+        }
+    }
+
+}
 
 
 

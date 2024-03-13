@@ -1,4 +1,3 @@
-
 function handleCreateUser() {
     const user = {
         name: document.getElementById("name").value,
@@ -15,8 +14,7 @@ function handleCreateUser() {
     })
         .then(response => {
             console.log('Response:', response);
-            console.log("hwere")
-            return response.json(); // assuming the response is JSON
+            return response.json();
         })
 }
 function handleLoginUser() {
@@ -41,46 +39,12 @@ function handleLoginUser() {
         .then(data => {
             console.log(data);
             if (data.token) {
-                // Store user information in session or local storage
                 sessionStorage.setItem('userToken', data.token);
-                // Optionally, you can store other user details like name, email, etc.
-
-                // Call the function to update User Info Modal
-                getUserInfoModal();
-
-                // Show the dashboard section
+                sessionStorage.setItem('userId', data.userId)
                 document.getElementById('dashboard').style.display = 'block';
             } else {
                 alert(data.message);
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-}
-function getUserInfoModal() {
-    const userToken = sessionStorage.getItem('token');
-    if (!userToken) {
-        // User not logged in
-        return;
-    }
-
-    fetch('/user', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${userToken}`,
-        },
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(userData => {
-            // Update User Info Modal content with userData
-            const userInfoModalContent = document.getElementById('userInfoModal').getElementsByClassName('modal-content')[0];
-            userInfoModalContent.innerHTML = `<p>User Name: ${userData.name}</p><p>Email: ${userData.email}</p>`;
         })
         .catch(error => {
             console.error('Error:', error);
