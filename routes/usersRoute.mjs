@@ -59,18 +59,12 @@ USER_API.post('/register', async (req, res, next) => {
             const user = new User();
             user.name = name;
             user.email = email;
-            user.pswHash = password; // Ensure password hashing is done inside User's save method
+            user.pswHash = password;
             await user.save();
-
-            // After successful user creation, create initial stats for the user
-            // Assuming `user.id` is now populated and `DBManager.createStats` method exists
-            // Initialize stats with zeros or any default values you see fit
             const initialStats = await DBManager.createStats(user.id, 0, 0, 0);
             if (!initialStats) {
                 throw new Error("Failed to create initial stats for user");
             }
-
-            // Return the newly created user (Consider excluding sensitive information like passwords)
             res.status(HTTPCodes.SuccesfullRespons.Ok).json({ user: user, stats: initialStats }).end();
         } catch (error) {
             console.error(error);
@@ -80,54 +74,38 @@ USER_API.post('/register', async (req, res, next) => {
         res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Missing required fields").end();
     }
 });
-
+//LOGIN!!!!!!
 USER_API.post('/login', async (req, res, next) => {
     const { email, password } = req.body;
     if (email && password) {
-        // Check if the user exists in the database
         let user = await DBManager.findByEmail(email);
         if (user) {
-            // Compare the provided password with the hashed password from the database
             const isPasswordValid = await bcrypt.compare(password, user.password);
-
             if (isPasswordValid) {
                 const token = createTokenForUser(user);
                 const userId = user.id
                 console.log(userId)
-
-                // Send the token as a response
                 res.status(HTTPCodes.SuccesfullRespons.Ok).json({ token, userId }).end();
             } else {
-                // Password is incorrect
                 res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).send("Incorrect email or password").end();
             }
         } else {
-            // User not found
             res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
         }
     } else {
-        // Missing email or password in the request body
         res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Email and password are required").end();
     }
 });
 
 USER_API.get('/user', async (req, res) => {
     const userToken = req.headers.authorization;
-
-    // Check if the token is present
     if (!userToken) {
         return res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).send("Unauthorized").end();
     }
-
     try {
-        // Decode the token and get the user information
         const decodedToken = decodeToken(userToken);
         const userId = decodedToken.userId;
-
-        // Fetch user information from the database based on the userId
         const user = await DBManager.getUserById(userId);
-
-        // Send the user information in the response
         res.status(HTTPCodes.SuccesfullRespons.Ok).json(user).end();
     } catch (error) {
         console.error('Error:', error);
