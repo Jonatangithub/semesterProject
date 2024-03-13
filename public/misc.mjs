@@ -4,7 +4,6 @@ function handleCreateUser() {
         email: document.getElementById("email").value,
         password: document.getElementById("password").value
     };
-
     fetch('http://localhost:3000/user/register', {
         method: 'POST',
         headers: {

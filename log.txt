@@ -2697,3 +2697,35 @@ Database connection  undefined
 4:02:36 PM [32mGET[39m /game.mjs
 4:02:36 PM [32mGET[39m /settings.mjs
 4:02:36 PM [32mGET[39m /misc.mjs
+Server enviorment undefined
+####################
+Database connection  undefined
+####################
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+4:35:01 PM [32mGET[39m /
+4:35:01 PM [32mGET[39m /styles.css
+4:35:01 PM [32mGET[39m /menu.mjs
+4:35:01 PM [32mGET[39m /game.mjs
+4:35:01 PM [32mGET[39m /settings.mjs
+4:35:01 PM [32mGET[39m /misc.mjs
+4:35:03 PM [33mPUT[39m /stats/updateStats
+4:35:11 PM [32mGET[39m /
+4:35:11 PM [32mGET[39m /styles.css
+4:35:12 PM [32mGET[39m /menu.mjs
+4:35:12 PM [32mGET[39m /game.mjs
+4:35:12 PM [32mGET[39m /settings.mjs
+4:35:12 PM [32mGET[39m /misc.mjs
+4:35:32 PM [33mPOST[39m /user/register
+4:35:44 PM [33mPOST[39m /user/login
+4:35:50 PM [33mPUT[39m /stats/updateStats
+4:35:53 PM [33mPUT[39m /stats/updateStats
+4:35:55 PM [33mPUT[39m /stats/updateStats
+4:35:57 PM [33mPUT[39m /stats/updateStats
+4:36:04 PM [33mPUT[39m /stats/updateStats
+4:36:06 PM [33mPUT[39m /stats/updateStats
+4:36:07 PM [33mPUT[39m /stats/updateStats
+4:36:09 PM [33mPUT[39m /stats/updateStats
+4:36:09 PM [33mPUT[39m /stats/updateStats

@@ -53,7 +53,7 @@ class superLogger {
     static instance = null;
 
     constructor() {
-        // This constructor will allways return a refrence to the first instance created. 
+ 
         if (superLogger.instance == null) {
             superLogger.instance = this;
             this.#loggers = [];
@@ -61,7 +61,6 @@ class superLogger {
         }
         return superLogger.instance;
     }
-    //#endregion
 
     static log(msg, logLevl = superLogger.LOGGING_LEVELS.NORMAL) {
 
@@ -72,47 +71,29 @@ class superLogger {
 
         logger.#writeToLog(msg);
     }
-
-
-    // This is our automatic logger, it outputs at a "normal" level
-    // It is just a convinent wrapper around the more generic createLimitedRequestLogger function
     createAutoHTTPRequestLogger() {
         return this.createLimitedHTTPRequestLogger({ threshold: superLogger.LOGGING_LEVELS.NORMAL });
     }
 
     createLimitedHTTPRequestLogger(options) {
-
-        // if no level is threshold, we default to NORMAL.
-        // We are using the logical or (||) 
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators#logical_operators
         const threshold = options.threshold || superLogger.LOGGING_LEVELS.NORMAL;
-
-        // Returning an anonymous function that binds local scope.
         return (req, res, next) => {
-
-            // If the threshold provided is less then the global threshold, we do not logg
             if (this.#globalThreshold > threshold) {
                 return;
             }
-
-            // Finaly we parse our request on to the method that is going to writ the log msg.
             this.#LogHTTPRequest(req, res, next);
         }
 
     }
 
-    #LogHTTPRequest(req, res, next) {
-        // These are just some variables that we extract to show the point 
-        // TODO: Extract and format information important for your dev process. 
+    #LogHTTPRequest(req, res, next) { 
         let type = req.method;
         const path = req.originalUrl;
         const when = new Date().toLocaleTimeString();
-
-        // TODO: This is just one simple thing to create structure and order. Can you do more?
         type = colorize(type);
         this.#writeToLog([when, type, path].join(" "));
 
-        // On to the next handler function
         next();
     }
 
@@ -120,8 +101,6 @@ class superLogger {
 
         msg += "\n";
         console.log(msg);
-        ///TODO: The files should be based on current date.
-        // ex: 300124.log
         fs.appendFile("./log.txt", msg, { encoding: "utf8" }, (err) => { });
     }
 }

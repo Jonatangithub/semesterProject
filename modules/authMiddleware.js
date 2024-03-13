@@ -1,13 +1,11 @@
 
-function checkAuth(req, res, next) {
+// NOT IN USE IN CURRENT PATCH
+/* function checkAuth(req, res, next) {
     const userToken = sessionStorage.getItem('userToken');
-  
     if (!userToken) {
       res.status(401).json({ message: 'not logged in' });
     } else {
-
       req.userToken = userToken;
-  
       fetch('/user', {
         method: 'GET',
         headers: {
@@ -29,6 +27,6 @@ function checkAuth(req, res, next) {
           res.status(500).json({ message: 'Internal Server Error' });
         });
     }
-  }
+  } */
   
   

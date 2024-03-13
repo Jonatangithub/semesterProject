@@ -16,14 +16,10 @@ export default function printDeveloperStartupInportantInformationMSG() {
     if (process.argv.length > 2) {
         if (process.argv[2] == "--setup") {
             superLogger.log(chalk.red("Runing setup for database"), superLogger.LOGGING_LEVELS.CRTICAL);
-            // TODO: Code that would set up our database with tbls etc..
         }
     }
-
     drawLine("#", 20);
-
 }
-
 function drawLine(symbole, length) {
     superLogger.log(symbole.repeat(length), superLogger.LOGGING_LEVELS.CRTICAL);
 }

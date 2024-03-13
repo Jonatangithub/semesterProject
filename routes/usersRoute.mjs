@@ -4,7 +4,7 @@ import { HTTPCodes } from "../modules/httpConstants.mjs";
 import superLogger from "../modules/superLogger.mjs";
 import DBManager from "../modules/storageManager.mjs";
 import crypto from 'crypto';
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt';
 
 function createTokenForUser(user) {
     const tokenPayload = {
@@ -37,13 +37,16 @@ function decodeToken(token) {
 }
 const USER_API = express.Router();
 USER_API.use(express.json());
+
+// FETCH SUM USARS
 USER_API.get('/', async (req, res) => {
-    console.log("here");
+    console.log("fetched");
     const user = new User();
     const users = await user.getUsers();
     res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(users)).end();
 });
 
+// FETCH AN USER
 USER_API.get('/:id', (req, res, next) => {
 })
 
@@ -74,6 +77,7 @@ USER_API.post('/register', async (req, res, next) => {
         res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Missing required fields").end();
     }
 });
+
 //LOGIN!!!!!!
 USER_API.post('/login', async (req, res, next) => {
     const { email, password } = req.body;
@@ -97,6 +101,7 @@ USER_API.post('/login', async (req, res, next) => {
     }
 });
 
+//ION REMBER
 USER_API.get('/user', async (req, res) => {
     const userToken = req.headers.authorization;
     if (!userToken) {
@@ -112,16 +117,8 @@ USER_API.get('/user', async (req, res) => {
         res.status(HTTPCodes.ServerSideErrorRespons.InternalServerError).send("Internal server error").end();
     }
 });
-
-USER_API.post('/:id', (req, res, next) => {
-    /// TODO: Edit user
-    const user = new User(); //TODO: The user info comes as part of the request 
-    user.save();
-});
-
 USER_API.delete('/:id', (req, res) => {
-    /// TODO: Delete user.
-    const user = new User(); //TODO: Actual user
+    const user = new User();
     user.delete();
 });
 
