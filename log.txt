@@ -4297,3 +4297,21 @@ Database connection  undefined
 4:31:37 PM [32mGET[39m /user/30
 4:51:23 PM [90mOPTIONS[39m /user/register
 5:29:35 PM [90mOPTIONS[39m /user/register
+####################
+Server enviorment prod
+Database connection  undefined
+####################
+6:07:35 PM [32mGET[39m /
+6:07:35 PM [32mGET[39m /styles.css
+6:07:35 PM [32mGET[39m /menu.mjs
+6:07:35 PM [32mGET[39m /misc.mjs
+6:07:35 PM [32mGET[39m /game.mjs
+6:07:35 PM [32mGET[39m /settings.mjs
+6:07:36 PM [32mGET[39m /favicon.ico
+6:07:38 PM [32mGET[39m /styles.css
+6:07:41 PM [32mGET[39m /
+6:07:41 PM [32mGET[39m /styles.css
+6:07:41 PM [32mGET[39m /game.mjs
+6:07:41 PM [32mGET[39m /menu.mjs
+6:07:41 PM [32mGET[39m /settings.mjs
+6:07:41 PM [32mGET[39m /misc.mjs
