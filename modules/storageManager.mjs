@@ -192,11 +192,8 @@ class DBManager {
 
 
 }
-String = process.env.ENVIRONMENT == "local" ? process.env.DB_CONNECTIONSTRING_LOCAL : process.env.DB_CONNECTIONSTRING_PROD;
+const connectionString = process.env.ENVIRONMENT == "local" ? process.env.DB_CONNECTIONSTRING_LOCAL : process.env.DB_CONNECTIONSTRING_PROD;
 if (connectionString == undefined) {
-    throw ("You forgot the db connection string");
+    throw new Error("You forgot the db connection string");
 }
-
-
-
 export default new DBManager(connectionString);
