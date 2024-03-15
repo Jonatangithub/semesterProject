@@ -17,7 +17,8 @@ function createTokenForUser(user) {
     const token = `${base64EncodedPayload}.${signature}`;
     return token;
 }
-function decodeToken(token) {
+
+/* function decodeToken(token) {
     try {
         const [payloadBase64, signatureBase64] = token.split('.');
         const payloadBuffer = Buffer.from(payloadBase64, 'base64');
@@ -34,18 +35,18 @@ function decodeToken(token) {
         console.error('Error decoding token:', error);
         throw error;
     }
-}
+} */
 const USER_API = express.Router();
 USER_API.use(express.json());
 
-// FETCH SUM USARS
+// FETCH SOME USERS
 USER_API.get('/', async (req, res) => {
     console.log("fetched");
     const user = new User();
     const users = await user.getUsers();
     res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(users)).end();
 });
-//REGISTER!!
+//REGISTER
 USER_API.post('/register', async (req, res, next) => {
     const { name, email, password } = req.body;
     if (name && email && password) {
@@ -73,7 +74,7 @@ USER_API.post('/register', async (req, res, next) => {
     }
 });
 
-//LOGIN!!!!!!
+//LOGIN
 USER_API.post('/login', async (req, res, next) => {
     const { email, password } = req.body;
     if (email && password) {
@@ -95,32 +96,29 @@ USER_API.post('/login', async (req, res, next) => {
         res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Email and password are required").end();
     }
 });
+//EDIT USER
 USER_API.put('/edit/:id', async (req, res) => {
-    const userId = req.params.id; // Make sure you're getting the user ID correctly
-    const { name, email, password } = req.body; // Extracting the updated details from the request body
+    const userId = req.params.id; 
+    const { name, email, password } = req.body; 
 
-    // Assuming password changes are optional
     let hashedPassword = undefined;
     if (password) {
-        hashedPassword = await bcrypt.hash(password, 10); // Hash the new password if it's provided
+        hashedPassword = await bcrypt.hash(password, 10);
     }
 
     try {
-        // Assuming `getOneUser` fetches the user based on ID and returns an object with user details
         const user = await DBManager.getOneUser(userId); 
         if (!user) {
             return res.status(404).send("User not found");
         }
 
-        // Prepare the user object with new details
         const updatedUser = {
-            id: userId, // Keep the same user ID
-            name: name || user.name, // Use the new name or fallback to the existing one
-            email: email || user.email, // Use the new email or fallback to the existing one
-            password: hashedPassword || user.password // Use the hashed new password or fallback to the existing one
+            id: userId,
+            name: name || user.name,
+            email: email || user.email,
+            password: hashedPassword || user.password
         };
 
-        // Update the user in the database
         await DBManager.updateUser(updatedUser);
         res.status(200).json({ success: true, message: "User updated successfully" });
     } catch (error) {
@@ -128,22 +126,7 @@ USER_API.put('/edit/:id', async (req, res) => {
         res.status(500).send("Internal server error");
     }
 });
-//ION REMBER
-USER_API.get('/:id', async (req, res) => {
-    const userToken = req.headers.authorization;
-    if (!userToken) {
-        return res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).send("Unauthorized").end();
-    }
-    try {
-        const decodedToken = decodeToken(userToken);
-        const userId = decodedToken.userId;
-        const user = await DBManager.getUserById(userId);
-        res.status(HTTPCodes.SuccesfullRespons.Ok).json(user).end();
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(HTTPCodes.ServerSideErrorRespons.InternalServerError).send("Internal server error").end();
-    }
-});
+//DELETE USER
 USER_API.delete('/delete/:id', async (req, res) => {
     const userId = req.params.id;
     try {

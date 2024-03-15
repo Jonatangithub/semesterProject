@@ -4196,3 +4196,102 @@ Database connection  undefined
 3:33:10 PM [32mGET[39m /game.mjs
 3:33:10 PM [32mGET[39m /settings.mjs
 3:33:10 PM [32mGET[39m /misc.mjs
+3:49:16 PM [32mGET[39m /
+3:49:16 PM [32mGET[39m /styles.css
+3:49:16 PM [32mGET[39m /menu.mjs
+3:49:16 PM [32mGET[39m /game.mjs
+3:49:16 PM [32mGET[39m /settings.mjs
+3:49:16 PM [32mGET[39m /misc.mjs
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+3:49:33 PM [33mPOST[39m /user/register
+3:50:39 PM [33mPOST[39m /user/login
+3:51:30 PM [32mGET[39m /
+3:51:30 PM [32mGET[39m /styles.css
+3:51:30 PM [32mGET[39m /game.mjs
+3:51:30 PM [32mGET[39m /menu.mjs
+3:51:30 PM [32mGET[39m /misc.mjs
+3:51:30 PM [32mGET[39m /settings.mjs
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+3:51:46 PM [33mPOST[39m /user/login
+3:52:05 PM [31mDELETE[39m /user/delete/36
+3:52:08 PM [32mGET[39m /
+3:52:08 PM [32mGET[39m /styles.css
+3:52:08 PM [32mGET[39m /menu.mjs
+3:52:08 PM [32mGET[39m /game.mjs
+3:52:08 PM [32mGET[39m /settings.mjs
+3:52:08 PM [32mGET[39m /misc.mjs
+3:52:16 PM [33mPOST[39m /user/register
+3:52:51 PM [33mPOST[39m /user/login
+4:14:02 PM [33mPOST[39m /user/register
+4:14:12 PM [33mPOST[39m /user/register
+4:14:32 PM [32mGET[39m /
+4:14:32 PM [32mGET[39m /styles.css
+4:14:32 PM [32mGET[39m /menu.mjs
+4:14:32 PM [32mGET[39m /game.mjs
+4:14:32 PM [32mGET[39m /settings.mjs
+4:14:32 PM [32mGET[39m /misc.mjs
+4:14:39 PM [33mPOST[39m /user/register
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+4:14:49 PM [32mGET[39m /
+4:14:49 PM [32mGET[39m /styles.css
+4:14:49 PM [32mGET[39m /game.mjs
+4:14:49 PM [32mGET[39m /menu.mjs
+4:14:49 PM [32mGET[39m /settings.mjs
+4:14:49 PM [32mGET[39m /misc.mjs
+4:14:55 PM [33mPOST[39m /user/register
+4:18:46 PM [32mGET[39m /
+4:18:46 PM [32mGET[39m /styles.css
+4:18:46 PM [32mGET[39m /menu.mjs
+4:18:46 PM [32mGET[39m /game.mjs
+4:18:46 PM [32mGET[39m /settings.mjs
+4:18:46 PM [32mGET[39m /misc.mjs
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+4:18:53 PM [32mGET[39m /
+4:18:53 PM [32mGET[39m /styles.css
+4:18:53 PM [32mGET[39m /menu.mjs
+4:18:53 PM [32mGET[39m /misc.mjs
+4:18:53 PM [32mGET[39m /settings.mjs
+4:18:53 PM [32mGET[39m /game.mjs
+4:19:09 PM [33mPUT[39m /stats/updateStats
+4:19:14 PM [33mPUT[39m /stats/updateStats
+4:19:48 PM [33mPOST[39m /user/register
+4:20:07 PM [33mPOST[39m /user/login
+4:20:14 PM [33mPUT[39m /stats/updateStats
+4:20:17 PM [33mPUT[39m /stats/updateStats
+4:20:21 PM [33mPUT[39m /stats/updateStats
+4:20:36 PM [32mGET[39m /stats/displayStats/41
+4:21:00 PM [32mGET[39m /stats/leaderboard
+4:21:38 PM [33mPUT[39m /stats/resetStats/41
+4:21:46 PM [32mGET[39m /stats/displayStats/41
+4:21:52 PM [31mDELETE[39m /user/delete/41
+4:21:59 PM [32mGET[39m /stats/displayStats/41
+4:21:59 PM [32mGET[39m /stats/displayStats/41
+4:22:19 PM [33mPUT[39m /stats/updateStats
+4:22:22 PM [33mPUT[39m /stats/updateStats
+4:22:32 PM [32mGET[39m /stats/leaderboard
+4:22:57 PM [33mPOST[39m /user/login
+4:23:27 PM [32mGET[39m /styles.css
+4:23:30 PM [32mGET[39m /
+4:23:31 PM [32mGET[39m /styles.css
+4:23:31 PM [32mGET[39m /menu.mjs
+4:23:31 PM [32mGET[39m /game.mjs
+4:23:31 PM [32mGET[39m /settings.mjs
+4:23:31 PM [32mGET[39m /misc.mjs
+####################
+Server enviorment undefined
+Database connection  undefined
+####################
+4:31:13 PM [32mGET[39m /user/29
+4:31:37 PM [32mGET[39m /user/30

@@ -100,7 +100,6 @@ class DBManager {
             client.end();
         }
     }
-
     async createStats(userid, wins, losses, draws) {
         const client = new pg.Client(this.#credentials);
         let createdStats;
