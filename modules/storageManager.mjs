@@ -199,4 +199,4 @@ if (connectionString == undefined) {
 
 
 
-export default new DBManager(process.env.DB_CONNECTIONSTRING);
+export default new DBManager(connectionString);
