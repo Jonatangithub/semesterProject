@@ -98,7 +98,7 @@ async getStats() {
 }
 async getUser() {
   try {
-      return await DBManager.getOneUser(this.id);
+      return await DBManager.getOneuser(this.id);
   } catch (error) {
   }
 }

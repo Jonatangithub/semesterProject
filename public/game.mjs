@@ -21,15 +21,15 @@ async function makeChoice(userChoice) {
 let statChange;
 async function getResult(user, computer) {
   const outcomes = {
-    rock: { beats: ['scissors', 'sponge', 'fire', 'human'], losesTo: ['paper', 'water', 'air', 'gun'] },
-    paper: { beats: ['rock', 'water', 'fire', 'gun'], losesTo: ['scissors', 'sponge', 'fire', 'human'] },
-    scissors: { beats: ['paper', 'sponge', 'air', 'human'], losesTo: ['rock', 'water', 'fire', 'gun'] },
-    sponge: { beats: ['paper', 'water', 'air', 'gun'], losesTo: ['rock', 'scissors', 'fire', 'human'] },
-    water: { beats: ['scissors', 'rock', 'fire', 'gun'], losesTo: ['paper', 'sponge', 'air', 'human'] },
-    air: { beats: ['fire', 'rock', 'water', 'gun'], losesTo: ['paper', 'scissors', 'sponge', 'human'] },
-    fire: { beats: ['scissors', 'paper', 'sponge', 'human'], losesTo: ['air', 'water', 'rock', 'gun'] },
-    gun: { beats: ['scissors', 'fire', 'rock', 'human'], losesTo: ['paper', 'air', 'sponge', 'water'] },
-    human: { beats: ['sponge', 'paper', 'water', 'air'], losesTo: ['fire', 'scissors', 'rock', 'gun'] }
+    rock: { beats: ['scissors', 'sponge', 'fire', 'human']},
+    paper: { beats: ['rock', 'water', 'fire', 'gun']},
+    scissors: { beats: ['paper', 'sponge', 'air', 'human'] },
+    sponge: { beats: ['paper', 'water', 'air', 'gun']},
+    water: { beats: ['scissors', 'rock', 'fire', 'gun']},
+    air: { beats: ['fire', 'rock', 'water', 'gun']},
+    fire: { beats: ['scissors', 'paper', 'sponge', 'human']},
+    gun: { beats: ['scissors', 'fire', 'rock', 'human']},
+    human: { beats: ['sponge', 'paper', 'water', 'air']}
   };
   let resultText;
   if (user === computer) {
@@ -79,6 +79,42 @@ function updateStats(statChange) {
     .catch(error => {
       console.error('Error updating stats:', error);
     });
+}
+function resetUserStats() {
+  const userId = sessionStorage.getItem('userId');
+  if (!userId) {
+      alert('User not logged in or user ID not found.');
+      return;
+  }
+  
+  // Add a confirmation dialog
+  const confirmReset = confirm("Are you sure you want to reset your stats? This action cannot be undone.");
+  if (!confirmReset) {
+      // If the user clicks "Cancel", stop the function
+      return;
+  }
+
+  // Proceed with resetting the stats if the user confirms
+  fetch(`/stats/resetStats/${userId}`, {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json',
+      }
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Failed to reset stats');
+      }
+      return response.json();
+  })
+  .then(data => {
+      alert("Stats reset successfully.");
+      // Optionally, refresh stats on the page if displayed
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      alert('Failed to reset stats.');
+  });
 }
 
 function displayStats() {
@@ -131,9 +167,3 @@ function displayLeaderboard() {
           console.error('Error fetching leaderboard:', error);
       });
 }
-
-
-
-
-
-

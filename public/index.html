@@ -23,6 +23,7 @@
             <a href="#login" data-modal="loginModal">Login</a>
             <a href="#settings" data-modal="settingsModal">Settings</a>
             <a href="#userInfo" data-modal="userInfoModal">User</a>
+            <a href="#editUser" data-modal="editUserModal">Edit User</a>
             <a href="#leaderboard" data-modal="leaderboardModal">leaderboard</a>
         </div>
     </header>
@@ -90,12 +91,32 @@
                 </form>
             </div>
         </div>
+        <div id="editUserModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('editUserModal')">&times;</span>
+                <h2>Edit User Information</h2>
+                <form id="editUserForm">
+                    <label for="editName">Name:</label>
+                    <input type="text" id="editName" name="Name" required>
+                    <p></p>
+                    <label for="editEmail">Email:</label>
+                    <input type="email" id="editEmail" name="Email" required>
+                    <p></p>
+                    <label for="editPassword">New Password:</label>
+                    <input type="password" id="editPassword" name="Password">
+                    <p></p>
+                    <button type="button" onclick="handleEditUser()">Save Changes</button>
+                </form>
+            </div>
+        </div>        
         <div id="settingsModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h3>These are the settings</h3>
                 <label for="darkModeCheckbox">Dark Mode</label>
                 <input type="checkbox" id="darkModeCheckbox">
+                <button type="button" onclick="resetUserStats()">Reset stats</button>
+                <button type="button" onclick="deleteAccount()">Delete Account</button>
             </div>
         </div>
         <div id="userInfoModal" class="modal">

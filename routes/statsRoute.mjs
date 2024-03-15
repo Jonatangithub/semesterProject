@@ -57,7 +57,21 @@ STATS_API.put('/updateStats', async (req, res) => {
         res.status(500).send("Failed to update stats due to server error");
     }
 });
-
+//RESET STATS
+STATS_API.put('/resetStats/:id', async (req, res) => {
+    const userId = req.params.id;
+    try {
+        const reset = await DBManager.resetStats(userId);
+        if (reset) {
+            res.status(200).json({ success: true, message: "Stats reset successfully" });
+        } else {
+            throw new Error('Failed to reset stats');
+        }
+    } catch (error) {
+        console.error("Database error:", error);
+        res.status(500).send("Failed to reset stats due to server error");
+    }
+});
 //DISPLAY STATS
 STATS_API.get('/displayStats/:id', async (req, res) => {
     const userId = req.params.id;

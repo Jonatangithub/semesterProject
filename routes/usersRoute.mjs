@@ -45,15 +45,6 @@ USER_API.get('/', async (req, res) => {
     const users = await user.getUsers();
     res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(users)).end();
 });
-
-// FETCH AN USER
-USER_API.get('/:id', async (req, res, next) => {
-        console.log("hdjsidsa");
-        const user = new User();
-        const users = await user.getUser();
-        res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(users)).end();
-})
-
 //REGISTER!!
 USER_API.post('/register', async (req, res, next) => {
     const { name, email, password } = req.body;
@@ -104,7 +95,39 @@ USER_API.post('/login', async (req, res, next) => {
         res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Email and password are required").end();
     }
 });
+USER_API.put('/edit/:id', async (req, res) => {
+    const userId = req.params.id; // Make sure you're getting the user ID correctly
+    const { name, email, password } = req.body; // Extracting the updated details from the request body
 
+    // Assuming password changes are optional
+    let hashedPassword = undefined;
+    if (password) {
+        hashedPassword = await bcrypt.hash(password, 10); // Hash the new password if it's provided
+    }
+
+    try {
+        // Assuming `getOneUser` fetches the user based on ID and returns an object with user details
+        const user = await DBManager.getOneUser(userId); 
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+
+        // Prepare the user object with new details
+        const updatedUser = {
+            id: userId, // Keep the same user ID
+            name: name || user.name, // Use the new name or fallback to the existing one
+            email: email || user.email, // Use the new email or fallback to the existing one
+            password: hashedPassword || user.password // Use the hashed new password or fallback to the existing one
+        };
+
+        // Update the user in the database
+        await DBManager.updateUser(updatedUser);
+        res.status(200).json({ success: true, message: "User updated successfully" });
+    } catch (error) {
+        console.error("Error updating user:", error);
+        res.status(500).send("Internal server error");
+    }
+});
 //ION REMBER
 USER_API.get('/:id', async (req, res) => {
     const userToken = req.headers.authorization;
@@ -121,10 +144,17 @@ USER_API.get('/:id', async (req, res) => {
         res.status(HTTPCodes.ServerSideErrorRespons.InternalServerError).send("Internal server error").end();
     }
 });
-USER_API.delete('/:id', (req, res) => {
-    const user = new User();
-    user.delete();
+USER_API.delete('/delete/:id', async (req, res) => {
+    const userId = req.params.id;
+    try {
+        await DBManager.deleteUser(userId);
+        res.status(200).json({ success: true, message: "User and stats deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        res.status(500).send("Internal server error");
+    }
 });
+
 
 
 export default USER_API

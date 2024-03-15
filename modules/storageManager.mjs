@@ -19,29 +19,44 @@ class DBManager {
         const client = new pg.Client(this.#credentials);
         try {
             await client.connect();
-            const output = await client.query('Update "public"."Users" set "name" = $1, "email" = $2, "password" = $3 where id = $4;', [user.name, user.email, user.pswHash, user.id]);
+            await client.query('UPDATE "public"."Users" SET "name" = $1, "email" = $2, "password" = $3 WHERE "id" = $4', [user.name, user.email, user.password, user.id]);
         } catch (error) {
-
+            console.error(error);
+            throw error;
         } finally {
             client.end();
         }
-
         return user;
-
+        
     }
-    async deleteUser(user) {
-
+    async deleteStats(userid) {
         const client = new pg.Client(this.#credentials);
-
         try {
             await client.connect();
-            const output = await client.query('Delete from "public"."Users"  where id = $1;', [user.id]);
-        } catch (error) {
+            await client.query('DELETE FROM "public"."stats" WHERE userid = $1', [userid]);
         } finally {
             client.end();
         }
-
-        return user;
+    }    
+    async deleteUser(userid) {
+        await this.deleteStats(userid); // Delete user stats first
+    
+        const client = new pg.Client(this.#credentials);
+        try {
+            await client.connect();
+            await client.query('DELETE FROM "public"."Users" WHERE id = $1', [userid]);
+        } finally {
+            client.end();
+        }
+    }
+    async deleteStats(userid) {
+        const client = new pg.Client(this.#credentials);
+        try {
+            await client.connect();
+            await client.query('DELETE FROM "public"."stats" WHERE userid = $1', [userid]);
+        } finally {
+            client.end();
+        }
     }
     async createUser(user) {
         const client = new pg.Client(this.#credentials);
@@ -72,7 +87,7 @@ class DBManager {
             client.end();
         }
     }
-    async getOneUser() {
+    async getOneUser(userid) {
         const client = new pg.Client(this.#credentials);
         try {
             await client.connect();
@@ -106,7 +121,20 @@ class DBManager {
         }
         return createdStats;
     }
-
+    async resetStats(userid) {
+        const client = new pg.Client(this.#credentials);
+        try {
+            await client.connect();
+            const result = await client.query('UPDATE "public"."stats" SET wins = 0, losses = 0, draws = 0 WHERE userid = $1', [userid]);
+            return result.rowCount > 0;
+        } catch (error) {
+            console.error("Error resetting stats:", error);
+            throw error;
+        } finally {
+            client.end();
+        }
+    }
+    
     async findByEmail(email) {
         const client = new pg.Client(this.#credentials);
         try {
