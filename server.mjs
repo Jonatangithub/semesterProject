@@ -19,7 +19,6 @@ server.use(express.static('public'));
 server.use("/user", USER_API);
 server.use("/stats", STATS_API);
 
-
 server.get("/", (req, res, next) => {
     res.status(200).send(JSON.stringify({ msg: "These are not the droids...." })).end();
 });

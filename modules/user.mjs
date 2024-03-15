@@ -96,6 +96,12 @@ async getStats() {
   } catch (error) {
   }
 }
+async getUser() {
+  try {
+      return await DBManager.getOneUser(this.id);
+  } catch (error) {
+  }
+}
 
 async trackGameResult(result) {
   const stats = await this.getStats();

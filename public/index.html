@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RPS 2</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
@@ -21,6 +23,7 @@
             <a href="#login" data-modal="loginModal">Login</a>
             <a href="#settings" data-modal="settingsModal">Settings</a>
             <a href="#userInfo" data-modal="userInfoModal">User</a>
+            <a href="#leaderboard" data-modal="leaderboardModal">leaderboard</a>
         </div>
     </header>
     <section id="dashboard" style="display:none;">
@@ -99,6 +102,15 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <p>This is the User Information.</p>
+                <p id="stats-display">Stats will be displayed here.</p>
+                <button onclick="displayStats()">Update stats</button>
+            </div>
+        </div>
+        <div id="leaderboardModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p id="leaderboard">Stats will be displayed here.</p>
+                <button onclick="displayLeaderboard()">Update Leaderboard</button>
             </div>
         </div>
     </section>

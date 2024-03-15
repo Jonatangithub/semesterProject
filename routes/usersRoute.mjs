@@ -47,7 +47,11 @@ USER_API.get('/', async (req, res) => {
 });
 
 // FETCH AN USER
-USER_API.get('/:id', (req, res, next) => {
+USER_API.get('/:id', async (req, res, next) => {
+        console.log("hdjsidsa");
+        const user = new User();
+        const users = await user.getUser();
+        res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(users)).end();
 })
 
 //REGISTER!!
@@ -102,7 +106,7 @@ USER_API.post('/login', async (req, res, next) => {
 });
 
 //ION REMBER
-USER_API.get('/user', async (req, res) => {
+USER_API.get('/:id', async (req, res) => {
     const userToken = req.headers.authorization;
     if (!userToken) {
         return res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).send("Unauthorized").end();

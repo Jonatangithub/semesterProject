@@ -52,7 +52,7 @@ class DBManager {
                 user.id = output.rows[0].id;
             }
         } catch (error) {
-            console.error(error); 
+            console.error(error);
         } finally {
             client.end();
         }
@@ -64,6 +64,19 @@ class DBManager {
         try {
             await client.connect();
             const result = await client.query('Select * from "public"."Users";');
+            return result.rows;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        } finally {
+            client.end();
+        }
+    }
+    async getOneUser() {
+        const client = new pg.Client(this.#credentials);
+        try {
+            await client.connect();
+            const result = await client.query('Select * from "public"."Users" WHERE id = $1;', [userid]);
             return result.rows;
         } catch (error) {
             console.error(error);
@@ -134,6 +147,26 @@ class DBManager {
             await client.end();
         }
     }
+    async getLeaderboardData() {
+        const client = new pg.Client(this.#credentials);
+        try {
+            await client.connect();
+            const result = await client.query(`
+            SELECT u.id, u.name, s.wins, s.losses, s.draws, 
+            (CASE WHEN (wins+losses+draws) = 0 THEN 0 ELSE (wins::decimal / (wins+losses+draws)) * 100 END) as winrate
+            FROM "public"."Users" u
+            INNER JOIN "public"."stats" s ON u.id = s.userid
+            ORDER BY winrate DESC, wins DESC
+        `);
+            return result.rows;
+        } catch (error) {
+            console.error("Error fetching leaderboard data:", error);
+            throw error;
+        } finally {
+            await client.end();
+        }
+    }
+
 
 }
 

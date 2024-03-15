@@ -58,4 +58,35 @@ STATS_API.put('/updateStats', async (req, res) => {
     }
 });
 
+//DISPLAY STATS
+STATS_API.get('/displayStats/:id', async (req, res) => {
+    const userId = req.params.id;
+
+    if (!userId) {
+        return res.status(401).send("Unauthorized: No userId provided");
+    }
+
+    try {
+        const currentStats = await DBManager.getStatsByuserid(userId);
+        if (!currentStats) {
+            return res.status(404).send("Stats not found for the user");
+        }
+        res.status(200).json(currentStats);
+    } catch (error) {
+        console.error("Error in /displayStats:", error);
+        res.status(500).send("Failed to display stats due to server error");
+    }
+});
+STATS_API.get('/leaderboard', async (req, res) => {
+    try {
+        const leaderboardData = await DBManager.getLeaderboardData();
+        res.status(HTTPCodes.SuccesfullRespons.Ok).json(leaderboardData);
+    } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+        res.status(HTTPCodes.ServerError.InternalServerError).send("Failed to fetch leaderboard");
+    }
+});
+
+
+
 export default STATS_API;

@@ -31,24 +31,24 @@ async function getResult(user, computer) {
     gun: { beats: ['scissors', 'fire', 'rock', 'human'], losesTo: ['paper', 'air', 'sponge', 'water'] },
     human: { beats: ['sponge', 'paper', 'water', 'air'], losesTo: ['fire', 'scissors', 'rock', 'gun'] }
   };
-  let resultText = "make a choice";
+  let resultText;
   if (user === computer) {
     statChange = "draw";
     console.log(statChange)
     resultText = "It's a tie!"
-    return { statChange };
+    return { statChange, resultText };
   } else if (outcomes[user].beats.includes(computer)) {
     statChange = "win";
     console.log(statChange)
     resultText = `You win! ${user} beats ${computer}.`
     document.getElementById('result-text').innerText = resultText;
-    return { statChange };
+    return { statChange, resultText };
   } else {
     statChange = "loss";
     console.log(statChange)
     resultText = `You lose! ${computer} beats ${user}.`
     document.getElementById('result-text').innerText = resultText;
-    return { statChange };
+    return { statChange, resultText };
   }
 }
 
@@ -80,6 +80,59 @@ function updateStats(statChange) {
       console.error('Error updating stats:', error);
     });
 }
+
+function displayStats() {
+  const userId = JSON.parse(sessionStorage.getItem('userId'));
+  console.log(userId);
+  fetch(`/stats/displayStats/${userId}`)
+  .then(response => {
+      if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+  })
+  .then(data => {
+    const totalGames = data.wins + data.losses + data.draws;
+    const winRate = totalGames === 0 ? 0 : (data.wins / totalGames) * 100;
+    const statsHTML = `
+      <table>
+        <tr><td>User:</td><td>${userId}</td></tr>
+        <tr><td>Wins:</td><td>${data.wins}</td></tr>
+        <tr><td>Losses:</td><td>${data.losses}</td></tr>
+        <tr><td>Draws:</td><td>${data.draws}</td></tr>
+        <tr><td>Win Rate:</td><td>${winRate.toFixed(2)}%</td></tr>
+      </table>
+    `;
+    document.getElementById('stats-display').innerHTML = statsHTML;
+  })
+  .catch(error => {
+      console.error('Error displaying stats:', error);
+  });
+}
+function displayLeaderboard() {
+  fetch('/stats/leaderboard')
+      .then(response => response.json())
+      .then(data => {
+          const leaderboardElement = document.getElementById('leaderboard');
+          leaderboardElement.innerHTML = '<h3>Top Players</h3><ul>' + 
+              data.map(user => {
+                  const wins = user.wins;
+                  const losses = user.losses;
+                  const draws = user.draws;
+                  const totalGames = wins + losses + draws;
+                  const winRate = totalGames === 0 ? 0 : (wins / totalGames) * 100;
+
+                  return `<li>Name: ${user.name} - Wins: ${wins}, Losses: ${losses}, Draws: ${draws}, Win Rate: ${winRate.toFixed(2)}%</li>`;
+              })
+              .join('') + '</ul>';
+          document.getElementById('leaderboardSection');
+      })
+      .catch(error => {
+          console.error('Error fetching leaderboard:', error);
+      });
+}
+
+
 
 
 

@@ -12,6 +12,7 @@ function handleCreateUser() {
         body: JSON.stringify(user),
     })
         .then(response => {
+            closeModal('registerModal');
             console.log('Response:', response);
             return response.json();
         })
@@ -31,7 +32,11 @@ function handleLoginUser() {
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                if (response.status === 404) {
+                    alert("Email or password is incorrect. Please try again.");
+                } else {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
             }
             return response.json();
         })
@@ -39,8 +44,11 @@ function handleLoginUser() {
             console.log(data);
             if (data.token) {
                 sessionStorage.setItem('userToken', data.token);
-                sessionStorage.setItem('userId', data.userId)
+                sessionStorage.setItem('userId', data.userId);
+                alert("Login successful!");
+                
                 document.getElementById('dashboard').style.display = 'block';
+                closeModal('loginModal');
             } else {
                 alert(data.message);
             }
@@ -48,4 +56,11 @@ function handleLoginUser() {
         .catch(error => {
             console.error('Error:', error);
         });
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = "none";
+    }
 }
