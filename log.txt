@@ -4331,3 +4331,12 @@ Database connection  ikke i
 Server enviorment prod
 ####################
 Database connection  
+7:28:31 PM [32mGET[39m /
+7:28:31 PM [32mGET[39m /menu.mjs
+7:28:31 PM [32mGET[39m /game.mjs
+7:28:31 PM [32mGET[39m /settings.mjs
+7:28:31 PM [32mGET[39m /styles.css
+7:28:31 PM [32mGET[39m /misc.mjs
+7:28:42 PM [33mPOST[39m /user/login
+7:28:59 PM [33mPOST[39m /user/login
+7:29:00 PM [33mPOST[39m /user/login
