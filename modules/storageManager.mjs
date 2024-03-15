@@ -23,7 +23,7 @@ class DBManager {
             client.end();
         }
         return user;
-        
+
     }
     async deleteStats(userid) {
         const client = new pg.Client(this.#credentials);
@@ -33,10 +33,10 @@ class DBManager {
         } finally {
             client.end();
         }
-    }    
+    }
     async deleteUser(userid) {
         await this.deleteStats(userid); // Delete user stats first
-    
+
         const client = new pg.Client(this.#credentials);
         try {
             await client.connect();
@@ -129,7 +129,7 @@ class DBManager {
             client.end();
         }
     }
-    
+
     async findByEmail(email) {
         const client = new pg.Client(this.#credentials);
         try {
@@ -192,7 +192,7 @@ class DBManager {
 
 
 }
-const connectionString = process.env.ENVIRONMENT == "local" ? process.env.DB_CONNECTIONSTRING_LOCAL : process.env.DB_CONNECTIONSTRING_PROD;
+String = process.env.ENVIRONMENT == "local" ? process.env.DB_CONNECTIONSTRING_LOCAL : process.env.DB_CONNECTIONSTRING_PROD;
 if (connectionString == undefined) {
     throw new Error("You forgot the db connection string");
 }
