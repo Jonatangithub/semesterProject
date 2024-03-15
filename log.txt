@@ -4295,3 +4295,4 @@ Database connection  undefined
 ####################
 4:31:13 PM [32mGET[39m /user/29
 4:31:37 PM [32mGET[39m /user/30
+4:51:23 PM [90mOPTIONS[39m /user/register
