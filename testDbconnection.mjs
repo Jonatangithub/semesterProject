@@ -1,5 +1,5 @@
   // testDbConnection.mjs
-/* 
+ 
 import pg from 'pg';
 import dotenv from 'dotenv';
 
@@ -31,4 +31,3 @@ async function testDbConnection() {
 
 
 testDbConnection(); 
-  */

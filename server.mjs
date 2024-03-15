@@ -4,6 +4,7 @@ import USER_API from './routes/usersRoute.mjs';
 import STATS_API from './routes/statsRoute.mjs';
 import superLogger from './modules/superLogger.mjs';
 import printDeveloperStartupInportantInformationMSG from "./modules/developerHelpers.mjs";
+import DBManager from "./modules/storageManager.mjs";
 
 printDeveloperStartupInportantInformationMSG();
 
