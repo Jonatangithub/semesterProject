@@ -2,7 +2,7 @@ import DBManager from "./storageManager.mjs"
 import bcrypt from 'bcrypt';
 
 class User {
-
+  
   constructor() {
     this.email;
     this.pswHash;

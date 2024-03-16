@@ -2,16 +2,14 @@ import pg from "pg"
 
 
 class DBManager {
-
     #credentials = {};
-
     constructor(connectionString) {
         this.#credentials = {
             connectionString,
             ssl: (process.env.DB_SSL === "true") ? true : false
         };
-
     }
+    //EDIT USER
     async updateUser(user) {
         const client = new pg.Client(this.#credentials);
         try {
@@ -23,9 +21,9 @@ class DBManager {
         } finally {
             client.end();
         }
-        return user;
-        
+        return user;       
     }
+
     async deleteStats(userid) {
         const client = new pg.Client(this.#credentials);
         try {
@@ -34,23 +32,14 @@ class DBManager {
         } finally {
             client.end();
         }
-    }    
+    }
+        
     async deleteUser(userid) {
-        await this.deleteStats(userid); // Delete user stats first
-    
+        await this.deleteStats(userid); 
         const client = new pg.Client(this.#credentials);
         try {
             await client.connect();
             await client.query('DELETE FROM "public"."Users" WHERE id = $1', [userid]);
-        } finally {
-            client.end();
-        }
-    }
-    async deleteStats(userid) {
-        const client = new pg.Client(this.#credentials);
-        try {
-            await client.connect();
-            await client.query('DELETE FROM "public"."stats" WHERE userid = $1', [userid]);
         } finally {
             client.end();
         }
@@ -70,7 +59,6 @@ class DBManager {
         }
         return user;
     }
-
     async getAllUsers() {
         const client = new pg.Client(this.#credentials);
         try {
@@ -130,7 +118,6 @@ class DBManager {
             client.end();
         }
     }
-    
     async findByEmail(email) {
         const client = new pg.Client(this.#credentials);
         try {
@@ -141,7 +128,6 @@ class DBManager {
             throw error;
         }
     }
-
     async getStatsByuserid(userid) {
         const client = new pg.Client(this.#credentials);
         try {
@@ -153,7 +139,6 @@ class DBManager {
 
         }
     }
-
     async updateStats(userid, wins, losses, draws) {
         const client = new pg.Client(this.#credentials);
 
@@ -190,8 +175,6 @@ class DBManager {
             await client.end();
         }
     }
-
-
 }
 let connectionString = process.env.ENVIORMENT == "local" ? process.env.DB_CONNECTIONSTRING_LOCAL : process.env.DB_CONNECTIONSTRING_PROD;
 if (connectionString == undefined) {

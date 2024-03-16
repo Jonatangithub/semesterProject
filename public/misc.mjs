@@ -22,7 +22,6 @@ function handleLoginUser() {
         email: document.getElementById("loginEmail").value,
         password: document.getElementById("loginPassword").value
     };
-
     fetch('/user/login', {
         method: 'POST',
         headers: {
@@ -64,7 +63,7 @@ function handleEditUser() {
         email: document.getElementById("editEmail").value,
         password: document.getElementById("editPassword").value
     };
-    const userId = sessionStorage.getItem('userId'); // No need to parse as JSON unless it was stored as a JSON string
+    const userId = sessionStorage.getItem('userId');
 
     fetch(`/user/edit/${userId}`, {
         method: 'PUT',
@@ -76,7 +75,6 @@ function handleEditUser() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-
             alert("User information updated successfully.");
             closeModal('editUserModal');
         } else {
@@ -91,12 +89,10 @@ function deleteAccount() {
         alert('User not logged in or user ID not found.');
         return;
     }
-  
     const confirmDelete = confirm("Are you sure you want to delete your account? This action cannot be undone.");
     if (!confirmDelete) {
         return;
     }
-
     fetch(`/user/delete/${userId}`, {
         method: 'DELETE',
         headers: {
@@ -111,16 +107,14 @@ function deleteAccount() {
     })
     .then(data => {
         alert("Account deleted successfully.");
-        // Handle logout or redirect as necessary
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Failed to delete account.');
+        alert('Failed to delete account, guess youre stuck here.');
     });
 }
 
-
-
+//MIDDLEWARE?
 function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {

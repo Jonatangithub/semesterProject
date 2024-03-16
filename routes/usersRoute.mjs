@@ -1,11 +1,11 @@
 import express from "express";
 import User from "../modules/user.mjs";
 import { HTTPCodes } from "../modules/httpConstants.mjs";
-import superLogger from "../modules/superLogger.mjs";
 import DBManager from "../modules/storageManager.mjs";
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 
+//TOKEN
 function createTokenForUser(user) {
     const tokenPayload = {
         userId: user.id,
@@ -17,36 +17,17 @@ function createTokenForUser(user) {
     const token = `${base64EncodedPayload}.${signature}`;
     return token;
 }
-
-/* function decodeToken(token) {
-    try {
-        const [payloadBase64, signatureBase64] = token.split('.');
-        const payloadBuffer = Buffer.from(payloadBase64, 'base64');
-        const payload = JSON.parse(payloadBuffer.toString());
-        const signatureBuffer = Buffer.from(signatureBase64, 'base64');
-        const expectedSignature = crypto.createHmac('sha256', 'token').update(payloadBase64).digest('base64');
-
-        if (crypto.timingSafeEqual(signatureBuffer, Buffer.from(expectedSignature))) {
-            return payload;
-        } else {
-            throw new Error('Invalid signature');
-        }
-    } catch (error) {
-        console.error('Error decoding token:', error);
-        throw error;
-    }
-} */
 const USER_API = express.Router();
 USER_API.use(express.json());
 
-// FETCH SOME USERS
+// FETCH SOME USERS, INSOMNIA USE
 USER_API.get('/', async (req, res) => {
     console.log("fetched");
     const user = new User();
     const users = await user.getUsers();
     res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(users)).end();
 });
-//REGISTER
+//REGISTER USER
 USER_API.post('/register', async (req, res, next) => {
     const { name, email, password } = req.body;
     if (name && email && password) {
@@ -73,8 +54,7 @@ USER_API.post('/register', async (req, res, next) => {
         res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Missing required fields").end();
     }
 });
-
-//LOGIN
+//LOGIN USER
 USER_API.post('/login', async (req, res, next) => {
     const { email, password } = req.body;
     if (email && password) {
@@ -98,20 +78,17 @@ USER_API.post('/login', async (req, res, next) => {
 });
 //EDIT USER
 USER_API.put('/edit/:id', async (req, res) => {
-    const userId = req.params.id; 
-    const { name, email, password } = req.body; 
-
+    const userId = req.params.id;
+    const { name, email, password } = req.body;
     let hashedPassword = undefined;
     if (password) {
         hashedPassword = await bcrypt.hash(password, 10);
     }
-
     try {
-        const user = await DBManager.getOneUser(userId); 
+        const user = await DBManager.getOneUser(userId);
         if (!user) {
             return res.status(404).send("User not found");
         }
-
         const updatedUser = {
             id: userId,
             name: name || user.name,
@@ -137,7 +114,4 @@ USER_API.delete('/delete/:id', async (req, res) => {
         res.status(500).send("Internal server error");
     }
 });
-
-
-
 export default USER_API

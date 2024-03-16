@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("darkModeEnabled", isChecked);
     });
 });
-
 function setDarkMode(enabled) {
     const body = document.body;
     if (enabled) {

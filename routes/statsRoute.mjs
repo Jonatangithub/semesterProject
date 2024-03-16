@@ -75,11 +75,9 @@ STATS_API.put('/resetStats/:id', async (req, res) => {
 //DISPLAY STATS
 STATS_API.get('/displayStats/:id', async (req, res) => {
     const userId = req.params.id;
-
     if (!userId) {
         return res.status(401).send("Unauthorized: No userId provided");
     }
-
     try {
         const currentStats = await DBManager.getStatsByuserid(userId);
         if (!currentStats) {
@@ -91,6 +89,7 @@ STATS_API.get('/displayStats/:id', async (req, res) => {
         res.status(500).send("Failed to display stats due to server error");
     }
 });
+//DISPLAY LEADERBOARD
 STATS_API.get('/leaderboard', async (req, res) => {
     try {
         const leaderboardData = await DBManager.getLeaderboardData();
@@ -100,7 +99,4 @@ STATS_API.get('/leaderboard', async (req, res) => {
         res.status(HTTPCodes.ServerError.InternalServerError).send("Failed to fetch leaderboard");
     }
 });
-
-
-
 export default STATS_API;

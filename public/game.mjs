@@ -51,7 +51,6 @@ async function getResult(user, computer) {
     return { statChange, resultText };
   }
 }
-
 function updateStats(statChange) {
   const userId = JSON.parse(sessionStorage.getItem('userId'));
   console.log(userId)
@@ -59,7 +58,6 @@ function updateStats(statChange) {
     userid: userId,
     result: statChange
   };
-
   fetch('/stats/updateStats', {
     method: 'PUT',
     headers: {
@@ -86,15 +84,10 @@ function resetUserStats() {
       alert('User not logged in or user ID not found.');
       return;
   }
-  
-  // Add a confirmation dialog
   const confirmReset = confirm("Are you sure you want to reset your stats? This action cannot be undone.");
   if (!confirmReset) {
-      // If the user clicks "Cancel", stop the function
       return;
   }
-
-  // Proceed with resetting the stats if the user confirms
   fetch(`/stats/resetStats/${userId}`, {
       method: 'PUT',
       headers: {
@@ -109,7 +102,6 @@ function resetUserStats() {
   })
   .then(data => {
       alert("Stats reset successfully.");
-      // Optionally, refresh stats on the page if displayed
   })
   .catch(error => {
       console.error('Error:', error);
