@@ -4355,3 +4355,30 @@ Database connection
 10:22:51 AM [32mGET[39m /menu.mjs
 10:22:51 AM [32mGET[39m /settings.mjs
 10:22:51 AM [32mGET[39m /favicon.ico
+####################
+Server enviorment prod
+Database connection  
+####################
+12:27:29 PM [32mGET[39m /
+12:27:29 PM [32mGET[39m /styles.css
+12:27:29 PM [32mGET[39m /menu.mjs
+12:27:29 PM [32mGET[39m /game.mjs
+12:27:29 PM [32mGET[39m /settings.mjs
+12:27:29 PM [32mGET[39m /misc.mjs
+12:27:32 PM [32mGET[39m /
+12:27:32 PM [32mGET[39m /styles.css
+12:27:32 PM [32mGET[39m /menu.mjs
+12:27:32 PM [32mGET[39m /game.mjs
+12:27:32 PM [32mGET[39m /settings.mjs
+12:27:32 PM [32mGET[39m /misc.mjs
+12:27:45 PM [33mPOST[39m /user/register
+12:27:50 PM [32mGET[39m /styles.css
+12:28:11 PM [33mPOST[39m /user/login
+12:28:24 PM [33mPUT[39m /stats/updateStats
+12:28:27 PM [33mPUT[39m /stats/updateStats
+12:28:31 PM [33mPUT[39m /stats/updateStats
+12:28:32 PM [33mPUT[39m /stats/updateStats
+12:28:33 PM [33mPUT[39m /stats/updateStats
+12:28:33 PM [33mPUT[39m /stats/updateStats
+12:28:47 PM [33mPUT[39m /stats/updateStats
+12:28:55 PM [33mPUT[39m /stats/updateStats
