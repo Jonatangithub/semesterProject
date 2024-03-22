@@ -1,110 +1,117 @@
-import express, { response } from "express";
+import express from "express";
 import User from "../modules/user.mjs";
-import { HTTPCodes, HTTPMethods } from "../modules/httpConstants.mjs";
-import fs from 'fs';
-import {saveUsersToFile, checkUserExists} from "./userLogic.mjs"
+import { HTTPCodes } from "../modules/httpConstants.mjs";
+import DBManager from "../modules/storageManager.mjs";
+import crypto from 'crypto';
+import bcrypt from 'bcrypt';
 
+//TOKEN
+function createTokenForUser(user) {
+    const tokenPayload = {
+        userId: user.id,
+        email: user.email,
+    };
+    const payloadString = JSON.stringify(tokenPayload);
+    const base64EncodedPayload = Buffer.from(payloadString).toString('base64');
+    const signature = crypto.createHmac('sha256', 'token').update(base64EncodedPayload).digest('base64');
+    const token = `${base64EncodedPayload}.${signature}`;
+    return token;
+}
 const USER_API = express.Router();
+USER_API.use(express.json());
 
-function generateRandomId(length) {
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-    let randomId;
-
-    do {
-        randomId = '';
-        for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * alphabet.length);
-            randomId += alphabet.charAt(randomIndex);
-        }
-    } while (users.some(user => user.id === randomId));
-
-    return randomId;
-}
-let users = [];
-try {
-  const data = fs.readFileSync('users.json', 'utf8');
-  users = JSON.parse(data);
-} catch (err) {
-  console.log('Error reading users file:', err.message);
-}
-
-
-// let generatedId = generateRandomId(10);
-
-USER_API.get('/:id', (req, res) => {
-    const userId = req.params.id;
-    const user = users.find(user => user.id === userId);
-    if (user) {
-        res.status(HTTPCodes.SuccesfullRespons.Ok).send(user).end();
-    } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
-    }
+// FETCH SOME USERS, INSOMNIA USE
+USER_API.get('/', async (req, res) => {
+    console.log("fetched");
+    const user = new User();
+    const users = await user.getUsers();
+    res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(users)).end();
 });
-
-USER_API.get('/', (req, res) => {
-    res.status(HTTPCodes.SuccesfullRespons.Ok).send(users).end();
-});
-
-USER_API.post('/', checkUserExists, (req, res) => {
+//REGISTER USER
+USER_API.post('/register', async (req, res, next) => {
     const { name, email, password } = req.body;
     if (name && email && password) {
-        const user = new User();
-        user.name = name;
-        user.email = email;
-        user.id = generateRandomId(7);
-        user.pswHash = password;
-        users.push(user);
-        saveUsersToFile(users, req, res, () => {
-            res.status(HTTPCodes.SuccesfullRespons.Ok).end();
-        });
+        try {
+            const emailTaken = await User.isEmailTaken(email);
+            if (emailTaken) {
+                return res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Email is already in use").end();
+            }
+            const user = new User();
+            user.name = name;
+            user.email = email;
+            user.pswHash = password;
+            await user.save();
+            const initialStats = await DBManager.createStats(user.id, 0, 0, 0);
+            if (!initialStats) {
+                throw new Error("Failed to create initial stats for user");
+            }
+            res.status(HTTPCodes.SuccesfullRespons.Ok).json({ user: user, stats: initialStats }).end();
+        } catch (error) {
+            console.error(error);
+            res.status(HTTPCodes.ServerSideErrorRespons.InternalServerError).send("Internal server error").end();
+        }
     } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Missing data field").end();
+        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Missing required fields").end();
     }
 });
-
-USER_API.put('/:id', (req, res) => {
+//LOGIN USER
+USER_API.post('/login', async (req, res, next) => {
+    const { email, password } = req.body;
+    if (email && password) {
+        let user = await DBManager.findByEmail(email);
+        if (user) {
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+            if (isPasswordValid) {
+                const token = createTokenForUser(user);
+                const userId = user.id
+                console.log(userId)
+                res.status(HTTPCodes.SuccesfullRespons.Ok).json({ token, userId }).end();
+            } else {
+                res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).send("Incorrect email or password").end();
+            }
+        } else {
+            res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+        }
+    } else {
+        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Email and password are required").end();
+    }
+});
+//EDIT USER
+USER_API.put('/edit/:id', async (req, res) => {
     const userId = req.params.id;
     const { name, email, password } = req.body;
-    
-    // Check if the userId is received
-    console.log("Received userId:", userId);
-    
-    const userIndex = users.findIndex(user => user.id === userId);
-    
-    // Check if the user with the provided userId exists
-    if (userIndex !== -1) {
-        // Log the user details before updating
-        console.log("Existing user details:", users[userIndex]);
-        
-        // Update the user's properties
-        users[userIndex].name = name !== undefined ? name : users[userIndex].name;
-        users[userIndex].email = email !== undefined ? email : users[userIndex].email;
-        users[userIndex].pswHash = password !== undefined ? password : users[userIndex].pswHash;
-        
-        // Log the updated user details
-        console.log("Updated user details:", users[userIndex]);
-        
-        // Save the changes to the JSON file
-        saveUsersToFile(users, req, res, () => {
-            res.status(HTTPCodes.SuccesfullRespons.Ok).send("User updated successfully").end();
-        });
-    } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+    let hashedPassword = undefined;
+    if (password) {
+        hashedPassword = await bcrypt.hash(password, 10);
+    }
+    try {
+        const user = await DBManager.getOneUser(userId);
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+        const updatedUser = {
+            id: userId,
+            name: name || user.name,
+            email: email || user.email,
+            password: hashedPassword || user.password
+        };
+
+        await DBManager.updateUser(updatedUser);
+        res.status(200).json({ success: true, message: "User updated successfully" });
+    } catch (error) {
+        console.error("Error updating user:", error);
+        res.status(500).send("Internal server error");
     }
 });
-
-
-USER_API.delete('/:id', (req, res, next) => {
+//DELETE USER
+USER_API.delete('/delete/:id', async (req, res) => {
     const userId = req.params.id;
-    const userIndex = users.findIndex(user => user.id === userId);
-    if (userIndex !== -1) {
-        users.splice(userIndex, 1);
-        saveUsersToFile(users, req, res, next); // Pass the updated users array
-        res.status(HTTPCodes.SuccesfullRespons.Ok).send("Deleted success").end();
-    } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+    try {
+        await DBManager.deleteUser(userId);
+        res.status(200).json({ success: true, message: "User and stats deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        res.status(500).send("Internal server error");
     }
 });
-
-
 export default USER_API

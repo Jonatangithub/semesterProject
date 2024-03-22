@@ -1,32 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RPS 2</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
     <script type="module" src="menu.mjs"></script>
     <script src="game.mjs"></script>
     <script type="module" src="settings.mjs"></script>
-
+    <script src="misc.mjs"></script>
     <header>
         <div id="menu-button">&#9776;</div>
         <h1>Rock Paper Scissors 2:</h1>
         <div id="options">
             <a href="#register" data-modal="registerModal">Register</a>
             <a href="#login" data-modal="loginModal">Login</a>
-            <a href="#leaderboard" data-modal="leaderboardModal">Leaderboard</a>
             <a href="#settings" data-modal="settingsModal">Settings</a>
+            <a href="#userInfo" data-modal="userInfoModal">User</a>
+            <a href="#editUser" data-modal="editUserModal">Edit User</a>
+            <a href="#leaderboard" data-modal="leaderboardModal">leaderboard</a>
         </div>
     </header>
-
+    <section id="dashboard" style="display:none;">
+        <h2>You are now logged in!</h2>
+        <div id="dashboard-content">
+            <p>Your game statistics will now be recorded.</p>
+        </div>
+    </section>
     <section>
         <h2>PLAY!</h2>
-        <p>.</p>
         <div id="game">
             <div id="user-choice">
                 <h3>Your Choice</h3>
@@ -41,7 +46,6 @@
                 <button onclick="makeChoice('gun')">Gun</button>
                 <p id="user-choice-text"></p>
             </div>
-
             <div id="computer-choice">
                 <h3>Computer's Choice</h3>
                 <p id="computer-choice-text"></p>
@@ -51,29 +55,21 @@
                 <p id="result-text">Make your choice to start the game!</p>
             </div>
         </div>
-
-        <div id="leaderboardModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <p>This is the Leaderboard.</p>
-            </div>
-        </div>
-
         <div id="registerModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>User Registration</h2>
-                <form id="registrationForm">
+                <form id="addUserForm">
                     <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
+                    <input type="text" id="name" name="Name" required>
                     <p></p>
                     <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="email" name="Email" required>
                     <p></p>
                     <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="password" name="Password" required>
                     <p></p>
-                    <button type="button" onclick="registerUser()">Register</button>
+                    <button type="button" onclick="handleCreateUser()">Register</button>
                 </form>
             </div>
         </div>
@@ -83,91 +79,62 @@
                 <h2>User Login</h2>
                 <form id="loginForm">
                     <label for="loginEmail">Email:</label>
-                    <input type="email" id="loginEmail" name="loginEmail" required>
+                    <input type="email" id="loginEmail" name="Email" required>
                     <p></p>
-
                     <label for="loginPassword">Password:</label>
-                    <input type="password" id="loginPassword" name="loginPassword" required>
+                    <input type="password" id="loginPassword" name="Password" required>
                     <p></p>
-
-                    <button type="button" onclick="loginUser()">Login</button>
+                    <button type="button" onclick="handleLoginUser()">Login</button>
                 </form>
             </div>
         </div>
+        <div id="editUserModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('editUserModal')">&times;</span>
+                <h2>Edit User Information</h2>
+                <form id="editUserForm">
+                    <label for="editName">Name:</label>
+                    <input type="text" id="editName" name="Name" required>
+                    <p></p>
+                    <label for="editEmail">Email:</label>
+                    <input type="email" id="editEmail" name="Email" required>
+                    <p></p>
+                    <label for="editPassword">New Password:</label>
+                    <input type="password" id="editPassword" name="Password">
+                    <p></p>
+                    <button type="button" onclick="handleEditUser()">Save Changes</button>
+                </form>
+            </div>
+        </div>        
         <div id="settingsModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h3>These are the settings</h3>
                 <label for="darkModeCheckbox">Dark Mode</label>
                 <input type="checkbox" id="darkModeCheckbox">
+                <button type="button" onclick="resetUserStats()">Reset stats</button>
+                <button type="button" onclick="deleteAccount()">Delete Account</button>
+            </div>
+        </div>
+        <div id="userInfoModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p>This is the User Information.</p>
+                <p id="stats-display">Stats will be displayed here.</p>
+                <button onclick="displayStats()">Update stats</button>
+            </div>
+        </div>
+        <div id="leaderboardModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p id="leaderboard">Stats will be displayed here.</p>
+                <button onclick="displayLeaderboard()">Update Leaderboard</button>
             </div>
         </div>
     </section>
-
     <footer>
         <p>&copy; 2024 Rock Paper Scissors 2. All rights reserved.</p>
     </footer>
-
-    <script>
-        const apiURL = 'http://localhost:8080/user'
-        function registerUser() {
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            const user = {
-                name: name,
-                email: email,
-                password: password
-            };
-
-            fetch(apiURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(user)
-            })
-                .then(response => {
-                    if (response.ok) {
-                        console.log('User registered successfully');
-                    } else {
-                        console.error('Failed to register user');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        }
-        function loginUser() {
-    const loginEmail = document.getElementById('loginEmail').value;
-    const loginPassword = document.getElementById('loginPassword').value;
-
-    const loginApiURL = 'http://localhost:8080/user/login'; //temp
-
-    const userCredentials = {
-        email: loginEmail,
-        password: loginPassword
-    };
-
-    fetch(loginApiURL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userCredentials)
-    })
-    .then(response => {
-        if (response.ok) {
-            console.log('User logged in successfully');
-
-        } else {
-            console.error('Failed to log in user');
-
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
-
-    </script>
 </body>
 
 </html>

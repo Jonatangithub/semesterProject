@@ -9,16 +9,13 @@ export function toggleMenu(event) {
         options.style.display = (options.style.display === "block") ? "none" : "block";
     }
 }
-
 export function closeOptions(event) {
     var options = document.getElementById("options");
     if (event.target !== document.getElementById("menu-button") && !options.contains(event.target)) {
         options.style.display = "none";
     }
 }
-
 document.getElementById("menu-button").addEventListener("click", toggleMenu);
-
 document.addEventListener("click", closeOptions);
 
 document.querySelectorAll("#options a").forEach(function (option) {
@@ -26,8 +23,6 @@ document.querySelectorAll("#options a").forEach(function (option) {
         event.preventDefault();
         var modalId = option.getAttribute("data-modal");
         var modal = document.getElementById(modalId);
-
-
         document.querySelectorAll(".modal").forEach(function (otherModal) {
             if (otherModal !== modal) {
                 otherModal.style.display = "none";
@@ -38,14 +33,12 @@ document.querySelectorAll("#options a").forEach(function (option) {
         options.style.display = "none"; 
     });
 });
-
 document.querySelectorAll(".modal .close").forEach(function (closeButton) {
     closeButton.addEventListener("click", function () {
         var modal = closeButton.closest(".modal");
         modal.style.display = "none";
     });
 });
-
 window.addEventListener("click", function (event) {
     var modals = document.querySelectorAll(".modal");
     modals.forEach(function (modal) {
